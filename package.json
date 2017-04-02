@@ -1,0 +1,25 @@
+{
+  "name": "jechanvre.io",
+  "version": "1.0.0",
+  "description": "jechanvre.io",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jaubut/jechanvre.git"
+  },
+  "keywords": [
+    "chanvre, web, je, chanvre, jechanvre"
+  ],
+  "author": "jeremie aubut",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jaubut/jechanvre/issues"
+  },
+  "homepage": "https://github.com/jaubut/jechanvre#readme",
+  "dependencies": {
+    "harp": "^0.20.3"
+  }
+}
+

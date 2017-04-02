@@ -1,0 +1,39 @@
+{
+    "index":{
+        "headline": "Jechanvre.io",
+        "metadescription": "Future plateforme de chanvrequebec.com",
+        "underline": "Future plateforme de chanvrequebec.com",
+        "metakeyword": "jechanvre, chanvre",
+        "show": "fasle",
+        "link": "https://www.chanvrequebec.com"
+    },
+    "notification1":{
+        "message": "Nouvel article de blog : 8 façons de changer le monde ",
+        "dotcolor": "div class='circle-dot yellow'",
+        "statue": "true",
+        "show": "true",
+        "link": "https://www.chanvrequebec.com/blog/8-facons-de-chanvrer-le-monde"
+        
+    },
+    "notification2":{
+        "message": "Allez vister notre page facebook en cliquant ici !",
+        "dotcolor": "div class='circle-dot blue'",
+        "statue": "true",
+        "show": "true",
+        "link": "https://www.facebook.com/chanvrequebec"
+    },
+    "notification3":{
+        "message": "Nouveaux produits signée : La feuille verte",
+        "dotcolor": "div class='circle-dot red'",
+        "statue": "false",
+        "show": "true",
+        "link": "https://www.chanvrequebec.com/produits"
+    },
+    "notification4":{
+        "message": "Rencontrez les membres de l'équipe",
+        "dotcolor": "div class='circle-dot green'",
+        "statue": "false",
+        "show": "true",
+        "link": "https://www.chanvrequebec.com/equipe"
+    }
+}

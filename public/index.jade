@@ -1,0 +1,2194 @@
+html.background.js.flexbox.flexboxlegacy.canvas.canvastext.webgl.no-touch.geolocation.postmessage.websqldatabase.indexeddb.hashchange.history.draganddrop.websockets.rgba.hsla.multiplebgs.backgroundsize.borderimage.borderradius.boxshadow.textshadow.opacity.cssanimations.csscolumns.cssgradients.cssreflections.csstransforms.csstransforms3d.csstransitions.fontface.generatedcontent.video.audio.localstorage.sessionstorage.webworkers.applicationcache.svg.inlinesvg.smil.svgclippaths(style='')
+  head
+    meta(http-equiv='Content-Type', content='text/html; charset=UTF-8')
+    meta(charset='utf-8')
+    meta(http-equiv='X-UA-Compatible', content='IE=edge,chrome=1')
+    title
+      | #WAQ17 | Strea.ma - Live Social Media Feed & Display Wall
+    meta(name='description', content='Strea.ma is the new tool that displays or monitors live social media feeds for your event or campaign from Twitter, Facebook, and Instagram.')
+    meta(property='og:title', content='#WAQ17 | Strea.ma - Live Social Media Feed & Display Wall')
+    meta(property='og:description', content='All your social updates in one clever stream')
+    meta(property='og:image', content='https://strea.ma/img/streama_fb_og.jpg')
+    meta(property='og:url', content='https://strea.ma/streams//embed/rLZOg7ye')
+    meta(name='author', content='Mogul')
+    meta(name='viewport', content='width=device-width, initial-scale=1.0')
+    link(href='https://s3-ap-southeast-2.amazonaws.com/streama/live/css/tiles.css?v=2.5.0', rel='stylesheet')
+    link(href='https://fontastic.s3.amazonaws.com/A4oxJEs8hzZSbcxMK6R72j/icons.css', rel='stylesheet')
+    link(href='https://s3-ap-southeast-2.amazonaws.com/streama/live/css/branding.css?v=2.5.0', rel='stylesheet')
+    link(rel="stylesheet" href="/assets/css/main.css")
+    // custom styles
+    style#pagestyles.
+    // end custom styles
+    script(async='', src='//www.google-analytics.com/analytics.js')
+    script(src='https://code.jquery.com/jquery.min.js')
+    script#optionsjs.
+      //setup global options
+      window.streamoptions = {"instructions":"0","post-limit":"200","embedinstructions":0,"plan":"premium","searches":[{"stream_url":"rLZOg7ye","platform":"instagram","platform_id":"15394","search":"#WAQ17","type":"hashtag","platform_id_internal":null,"name":null,"handle":null,"link":null,"image":null,"last_update":null},{"stream_url":"rLZOg7ye","platform":"twitter","platform_id":"15393","search":"#WAQ17","type":"hashtag","platform_id_internal":null,"name":null,"handle":null,"link":null,"image":null,"last_update":null}],"pinginterval":15000};
+      window.streamtheme = [];
+    script.
+      //Don't let console.log break old IE
+      if (!window.console) window.console = {};
+      if (!window.console.log) window.console.log = function () { };
+      function replaceBrokenImage(image) {
+      jQuery(function($) {
+      var $img = $(image);
+      if($img.parent().hasClass('avatar') || $img.hasClass('avatar')) { //avatars
+      $img.attr('src','https://s3-ap-southeast-2.amazonaws.com/streama/live/img/avatar.gif');
+      }
+      else { //tile images
+      var thisid = $img.parents('.tile').first().attr('data-guid');
+      console.log(thisid + ' is broken')
+      console.log( 'Found ' + $('[data-guid="' + thisid + '"]').length + ' matching tiles');
+      if($.inArray(thisid,window.blockedposts) == false) {
+      window.blockedposts.push(thisid.toString());
+      }
+      var errorMarkup = '<div class="streamvert2 brokenimage"><img src="https://s3-ap-southeast-2.amazonaws.com/streama/live/img/logoSansIcon.png"><hr><p>This image could not be retrieved. The user may have removed it.</p></div>';
+      $img.replaceWith(errorMarkup);
+      //tidy up the window.blockedposts array so it doesn't grow indefinitely if we leave strea.ma running
+      if(window.blockedposts.length > 50) {
+      for(var i = 0; i < (window.blockedposts.length - 50); i++) {
+      window.blockedposts.shift();
+      }
+      }
+      $('[data-guid="' + thisid + '"]').remove(); //gtfo
+      }
+      });
+      } //replaceBrokenImage()
+  #waq
+    body
+        .brandwrap.flex.branding
+          section.brand-col
+            .fix
+              .brand-inner
+                a(href="jechanvre")
+                    button.secondary-btn Découvrez jechanvre.io
+                p.custommessage
+                  | Post ton contenu maintenant
+              .tags.twitter
+                p
+                  i.icon-twitter
+                  | Twitter
+                a.tag(href='https://twitter.com/hashtag/WAQ17') #WAQ17
+              .tags.instagram
+                p
+                  i.icon-instagram
+                  | Instagram
+                a.tag(href='https://www.instagram.com/explore/tags/WAQ17') #WAQ17
+              .tags
+                  a.netlify(href='https://www.netlify.com')
+                    img(src='https://www.netlify.com/img/global/badges/netlify-color-accent.svg' width="75px" height="auto")
+            // .fix
+          script.
+            var branding_sidebar_interval = false; //will be the JS setInterval controlling branding sidebar display
+            var sidebar_display_mode = (typeof window.streamtheme['sidebar-display-interval'] != 'undefined' ? window.streamtheme['sidebar-display-interval'] : 0 ); //This value will be either 0 (display sidebar at all times) or 'custom' (refer to sidebar_display_interval_custom for the custom value)
+            var branding_sidebar_wait_interval = (typeof window.streamtheme['sidebar-wait-interval-custom'] != 'undefined' ? window.streamtheme['sidebar-wait-interval-custom'] : 30 );
+            var branding_sidebar_display_interval = (typeof window.streamtheme['sidebar-display-interval-custom'] != 'undefined' ? window.streamtheme['sidebar-display-interval-custom'] : 10 );
+            var new_branding_sidebar_wait_interval; //holds a new value for branding_sidebar_wait_interval before that variable is replaced
+            $(document).ready(function(){
+            branding_sidebar_interval = setInterval(function(){
+            showBrandingSidebar();
+            }, branding_sidebar_wait_interval*1000);
+            showBrandingSidebar(); //show it on page load
+            });
+            //showBrandingSidebar
+            //If sidebar is enabled, updates all the relevant sidebar details - colours, fonts, styles etc, and also parameters controlling sidebar display
+            //Then shows sidebar
+            function showBrandingSidebar() {
+            console.log("showBrandingSidebar()")
+            if(typeof window.streamtheme != 'undefined') {
+            sidebar_display_mode = (typeof window.streamtheme['sidebar-display-interval'] != 'undefined' ? window.streamtheme['sidebar-display-interval'] : 0 );
+            new_branding_sidebar_wait_interval = (typeof window.streamtheme['sidebar-wait-interval-custom'] != 'undefined' ? window.streamtheme['sidebar-wait-interval-custom'] : 30 );
+            if(sidebar_display_mode == 'custom' && (new_branding_sidebar_wait_interval != branding_sidebar_wait_interval)) {
+            clearInterval(branding_sidebar_interval);
+            //overwrite our old wait value
+            branding_sidebar_wait_interval = new_branding_sidebar_wait_interval;
+            new_branding_sidebar_wait_interval = false; //clear our 'new' value
+            branding_sidebar_interval = setInterval(function(){
+            showBrandingSidebar();
+            }, branding_sidebar_wait_interval*1000);
+            }
+            //show sidebar by default if it hasn't been explicitly turned off
+            if(typeof window.streamtheme['enablesidebar'] == 'undefined' || window.streamtheme['enablesidebar'] == 1) {
+            updateBrandingSidebar(); //update branding in case it's changed
+            //This class shows the sidebar
+            $('.brandwrap').addClass('branding');
+            branding_sidebar_display_interval = (typeof window.streamtheme['sidebar-display-interval-custom'] != 'undefined' ? window.streamtheme['sidebar-display-interval-custom'] : 10 );
+            //if sidebar not set to permanent display, set up an interval to hide it again
+            if(sidebar_display_mode == 'custom' && branding_sidebar_display_interval != 0) {
+            //Hide sidebar
+            setTimeout(function(){
+            $('.brandwrap').removeClass('branding');
+            },branding_sidebar_display_interval*1000);
+            }
+            }
+            else { //Hide sidebar if visible
+            if($('.brandwrap').hasClass('branding')) {
+            $('.brandwrap').removeClass('branding');
+            }
+            }
+            }
+            }//showBrandingSidebar()
+            function updateBrandingSidebar() {
+            //get the approprite HTML from $newstream and swap it out
+            var $newpopup = $newstream.find('.brand-col');
+            if($newpopup.length) {
+            $('.brand-col').replaceWith($newpopup);
+            }
+            }
+          section.main-col.wrap
+            section#custombanner.clearfix
+            section#tiles
+              div(style='clear: both;')
+              #postcorral(style='width: 33.3333%;')
+              // /.postcorral
+              .matrix.columns-4.columns-3
+                .column(data-index='1', style='width: 33.3333%; top: 0px;')
+                  .tile.ok.text.twitter(data-timestamp='1491064318', data-platform='twitter', data-id='848211344910426112', data-guid='twitter_848211344910426112', style='display: block;')
+                    .tileInner
+                      .info
+                        a.avatar(target='_blank', href='https://twitter.com/jeremyCoutellec')
+                          img.box_round4(src='https://pbs.twimg.com/profile_images/848210401548529669/vYLj1ke7_normal.jpg', onerror='replaceBrokenImage(this);')
+                        .meta
+                          a(target='_blank', href='https://twitter.com/jeremyCoutellec') Jeremy Coutellec
+                          .socialIcon
+                          span 8 hours ago
+                        // end div.meta
+                      // end div.info
+                      .message
+                        p
+                        p
+                          | Départ sur paris ! La team IPI est presque au complet. Vivement demain 
+                          a(target='_blank', href='https://twitter.com/hashtag/IPIExpedition', rel='noreferrer') #IPIExpedition
+                          a(target='_blank', href='https://twitter.com/IPIToulouse', rel='noreferrer') @IPIToulouse
+                          a(target='_blank', href='https://twitter.com/hashtag/WAQ17%E2%80%A6', rel='noreferrer') #WAQ17…
+                          a(href='https://t.co/zAYhU9mx4f') https://t.co/zAYhU9mx4f
+                        p
+                      // end div.messageBody
+                    // .tileInner
+                  .tile.ok.text.twitter(data-timestamp='1490999240', data-platform='twitter', data-id='847938387285856260', data-guid='twitter_847938387285856260', style='display: block;')
+                    .tileInner
+                      .info
+                        a.avatar(target='_blank', href='https://twitter.com/webaquebec')
+                          img.box_round4(src='https://pbs.twimg.com/profile_images/800724958125113344/CcYGw9Wu_normal.jpg', onerror='replaceBrokenImage(this);')
+                        .meta
+                          a(target='_blank', href='https://twitter.com/webaquebec') Web à Québec
+                          .socialIcon
+                          span 1 day ago
+                        // end div.meta
+                      // end div.info
+                      .message
+                        p
+                        p
+                          | Kick off communication du 
+                          a(target='_blank', href='https://twitter.com/hashtag/waq17,', rel='noreferrer') #waq17,
+                          |  on est bouillant ! @ Quebec, Quebec 
+                          a(href='https://t.co/iE4Mufzvy6') https://t.co/iE4Mufzvy6
+                        p
+                      // end div.messageBody
+                    // .tileInner
+                  .tile.ok.text.twitter(data-timestamp='1490977642', data-platform='twitter', data-id='847847800167694336', data-guid='twitter_847847800167694336', style='display: block;')
+                    .tileInner
+                      .info
+                        a.avatar(target='_blank', href='https://twitter.com/JessicaSth26')
+                          img.box_round4(src='https://pbs.twimg.com/profile_images/847607609767059458/dgdb8c8M_normal.jpg', onerror='replaceBrokenImage(this);')
+                        .meta
+                          a(target='_blank', href='https://twitter.com/JessicaSth26') Jessica St-Hilaire
+                          .socialIcon
+                          span 1 day ago
+                        // end div.meta
+                      // end div.info
+                      .message
+                        p
+                        p
+                          a(target='_blank', href='https://twitter.com/webaquebec', rel='noreferrer') @webaquebec
+                          |  est-ce seulement de jour le 
+                          a(target='_blank', href='https://twitter.com/hashtag/WAQ17', rel='noreferrer') #WAQ17
+                          |  ?
+                        p
+                      // end div.messageBody
+                    // .tileInner
+                  .tile.ok.text.twitter(data-timestamp='1490973114', data-platform='twitter', data-id='847828810309533700', data-guid='twitter_847828810309533700', style='display: block;')
+                    .tileInner
+                      .info
+                        a.avatar(target='_blank', href='https://twitter.com/SNQuebec')
+                          img.box_round4(src='https://pbs.twimg.com/profile_images/824220375575908352/Am68jdLL_normal.jpg', onerror='replaceBrokenImage(this);')
+                        .meta
+                          a(target='_blank', href='https://twitter.com/SNQuebec') Semaine Numérique QC
+                          .socialIcon
+                          span 1 day ago
+                        // end div.meta
+                      // end div.info
+                      .message
+                        p
+                        p
+                          | Participants de la 
+                          a(target='_blank', href='https://twitter.com/hashtag/SNQuebec17', rel='noreferrer') #SNQuebec17
+                          |  ou du 
+                          a(target='_blank', href='https://twitter.com/hashtag/WAQ17,', rel='noreferrer') #WAQ17,
+                          |  planifiez vos rendez-vous d'affaires avec le module de Rencontres BDC.… 
+                          a(href='https://t.co/WICDnNVFEQ') https://t.co/WICDnNVFEQ
+                        p
+                      // end div.messageBody
+                    // .tileInner
+                  .tile.ok.text.twitter(data-timestamp='1490968053', data-platform='twitter', data-id='847807582655971328', data-guid='twitter_847807582655971328', style='display: block;')
+                    .tileInner
+                      .info
+                        a.avatar(target='_blank', href='https://twitter.com/imarklab')
+                          img.box_round4(src='https://pbs.twimg.com/profile_images/1422099864/imarklab_logo_normal.png', onerror='replaceBrokenImage(this);')
+                        .meta
+                          a(target='_blank', href='https://twitter.com/imarklab') imarklab
+                          .socialIcon
+                          span 1 day ago
+                        // end div.meta
+                      // end div.info
+                      .message
+                        p
+                        p
+                          | Alexandre Tellier, Directeur Recherche, sera au 
+                          a(target='_blank', href='https://twitter.com/webaquebec', rel='noreferrer') @webaquebec
+                          |  mercredi prochain. Assisterez-vous au 
+                          a(target='_blank', href='https://twitter.com/hashtag/WAQ17', rel='noreferrer') #WAQ17
+                          |  ? 
+                          a(href='https://t.co/MtCXR9cS1z') https://t.co/MtCXR9cS1z
+                        p
+                      // end div.messageBody
+                    // .tileInner
+                  .tile.ok.text.twitter(data-timestamp='1490967494', data-platform='twitter', data-id='847805236752396288', data-guid='twitter_847805236752396288', style='display: block;')
+                    .tileInner
+                      .info
+                        a.avatar(target='_blank', href='https://twitter.com/mhraymond')
+                          img.box_round4(src='https://pbs.twimg.com/profile_images/485439225710379008/gF97XK3h_normal.jpeg', onerror='replaceBrokenImage(this);')
+                        .meta
+                          a(target='_blank', href='https://twitter.com/mhraymond') Marie-Hélène Raymond
+                          .socialIcon
+                          span 1 day ago
+                        // end div.meta
+                      // end div.info
+                      .message
+                        p
+                        p
+                          | On se voit au 
+                          a(target='_blank', href='https://twitter.com/webaquebec', rel='noreferrer') @webaquebec
+                          |  la semaine prochaine? ;) 
+                          a(target='_blank', href='https://twitter.com/hashtag/WAQ17', rel='noreferrer') #WAQ17
+                          a(target='_blank', href='https://twitter.com/hashtag/motiondesign', rel='noreferrer') #motiondesign
+                          |  cc 
+                          a(target='_blank', href='https://twitter.com/novafilmquebec', rel='noreferrer') @novafilmquebec
+                          a(target='_blank', href='https://twitter.com/mnbaq', rel='noreferrer') @mnbaq
+                          a(target='_blank', href='https://twitter.com/hashtag/pcnq', rel='noreferrer') #pcnq
+                          a(href='https://t.co/lUUGrY5teR') https://t.co/lUUGrY5teR
+                        p
+                      // end div.messageBody
+                    // .tileInner
+                  .tile.ok.text.twitter(data-timestamp='1490966869', data-platform='twitter', data-id='847802613219438592', data-guid='twitter_847802613219438592', style='display: block;')
+                    .tileInner
+                      .info
+                        a.avatar(target='_blank', href='https://twitter.com/Yhoanis')
+                          img.box_round4(src='https://pbs.twimg.com/profile_images/658370872303034368/lvbYyq-G_normal.jpg', onerror='replaceBrokenImage(this);')
+                        .meta
+                          a(target='_blank', href='https://twitter.com/Yhoanis') Yhoanis Obando
+                          .socialIcon
+                          span 1 day ago
+                        // end div.meta
+                      // end div.info
+                      .message
+                        p
+                        p
+                          | Je devrais faire un tour au 
+                          a(target='_blank', href='https://twitter.com/webaquebec', rel='noreferrer') @webaquebec
+                          |  la semaine prochaine! Qui y sera? 🙋🏽 
+                          a(target='_blank', href='https://twitter.com/hashtag/WAQ17', rel='noreferrer') #WAQ17
+                        p
+                      // end div.messageBody
+                    // .tileInner
+                  .tile.ok.text.twitter(data-timestamp='1490891907', data-platform='twitter', data-id='847488202533294082', data-guid='twitter_847488202533294082', style='display: block;')
+                    .tileInner
+                      .info
+                        a.avatar(target='_blank', href='https://twitter.com/agencelunaweb')
+                          img.box_round4(src='https://pbs.twimg.com/profile_images/501671936745684992/n791vf7a_normal.jpeg', onerror='replaceBrokenImage(this);')
+                        .meta
+                          a(target='_blank', href='https://twitter.com/agencelunaweb') Agence LunaWeb
+                          .socialIcon
+                          span 2 days ago
+                        // end div.meta
+                      // end div.info
+                      .message
+                        p
+                        p
+                          | Fier de voir un ancien de 
+                          a(target='_blank', href='https://twitter.com/agencelunaweb', rel='noreferrer') @agencelunaweb
+                          |  animer un atelier au 
+                          a(target='_blank', href='https://twitter.com/hashtag/WAQ17', rel='noreferrer') #WAQ17
+                          |  cette année ! Bravo 
+                          a(target='_blank', href='https://twitter.com/Tonours', rel='noreferrer') @Tonours
+                          |  et allô à vous… 
+                          a(href='https://t.co/Wnrf0xYJHx') https://t.co/Wnrf0xYJHx
+                        p
+                      // end div.messageBody
+                    // .tileInner
+                  .tile.ok.text.twitter(data-timestamp='1490889573', data-platform='twitter', data-id='847478411291271169', data-guid='twitter_847478411291271169', style='display: block;')
+                    .tileInner
+                      .info
+                        a.avatar(target='_blank', href='https://twitter.com/canadadri')
+                          img.box_round4(src='https://pbs.twimg.com/profile_images/374571065/img_0926_normal.jpg', onerror='replaceBrokenImage(this);')
+                        .meta
+                          a(target='_blank', href='https://twitter.com/canadadri') Christophe Villemer
+                          .socialIcon
+                          span 2 days ago
+                        // end div.meta
+                      // end div.info
+                      .message
+                        p
+                        p
+                          | l'Internet des objets face aux défis de l'accessibilité et de l'interopérabilité 
+                          a(target='_blank', href='https://twitter.com/hashtag/iot', rel='noreferrer') #iot
+                          a(target='_blank', href='https://twitter.com/hashtag/Standards', rel='noreferrer') #Standards
+                          a(target='_blank', href='https://twitter.com/hashtag/WAQ17', rel='noreferrer') #WAQ17
+                          a(href='https://t.co/Otx1nErGnY') https://t.co/Otx1nErGnY
+                        p
+                      // end div.messageBody
+                    // .tileInner
+                  .tile.ok.text.twitter(data-timestamp='1490879710', data-platform='twitter', data-id='847437041818308608', data-guid='twitter_847437041818308608', style='display: block;')
+                    .tileInner
+                      .info
+                        a.avatar(target='_blank', href='https://twitter.com/webaquebec')
+                          img.box_round4(src='https://pbs.twimg.com/profile_images/800724958125113344/CcYGw9Wu_normal.jpg', onerror='replaceBrokenImage(this);')
+                        .meta
+                          a(target='_blank', href='https://twitter.com/webaquebec') Web à Québec
+                          .socialIcon
+                          span 2 days ago
+                        // end div.meta
+                      // end div.info
+                      .message
+                        p
+                        p
+                          | Classes de Maître 
+                          a(target='_blank', href='https://twitter.com/hashtag/WAQ17', rel='noreferrer') #WAQ17
+                          |  // As-Tu envie de "t'amuser" avec TensorFlow 0.12 ? Cette classe de Maître est pour toi!🙌🔥… 
+                          a(href='https://t.co/zqwnbWDeDH') https://t.co/zqwnbWDeDH
+                        p
+                      // end div.messageBody
+                    // .tileInner
+                  .tile.ok.text.twitter(data-timestamp='1490839470', data-platform='twitter', data-id='847268265487245313', data-guid='twitter_847268265487245313', style='display: block;')
+                    .tileInner
+                      .info
+                        a.avatar(target='_blank', href='https://twitter.com/BeCoffee')
+                          img.box_round4(src='https://pbs.twimg.com/profile_images/274927352/Logo_BeCoffee_Signe-RGB_normal.png', onerror='replaceBrokenImage(this);')
+                        .meta
+                          a(target='_blank', href='https://twitter.com/BeCoffee') BeCoffee
+                          .socialIcon
+                          span 3 days ago
+                        // end div.meta
+                      // end div.info
+                      .message
+                        p
+                        p
+                          | Soyez écoresponsable avec une KeepCup au 
+                          a(target='_blank', href='https://twitter.com/hashtag/WAQ17', rel='noreferrer') #WAQ17
+                          |  Rabais 10% code WAQ17. Livraison gratuite sur place chaque jour! 
+                          a(href='https://t.co/rs3lCs30he') https://t.co/rs3lCs30he
+                        p
+                      // end div.messageBody
+                    // .tileInner
+                  .tile.ok.text.twitter(data-timestamp='1490829135', data-platform='twitter', data-id='847224917321949185', data-guid='twitter_847224917321949185', style='display: block;')
+                    .tileInner
+                      .info
+                        a.avatar(target='_blank', href='https://twitter.com/millaudrey')
+                          img.box_round4(src='https://pbs.twimg.com/profile_images/848195877860773888/UY7-g_R5_normal.jpg', onerror='replaceBrokenImage(this);')
+                        .meta
+                          a(target='_blank', href='https://twitter.com/millaudrey') Audrey Miller
+                          .socialIcon
+                          span 3 days ago
+                        // end div.meta
+                      // end div.info
+                      .message
+                        p
+                        p
+                          | Ohhh je suis sur la liste VIP du 
+                          a(target='_blank', href='https://twitter.com/hashtag/WAQ17', rel='noreferrer') #WAQ17
+                          |  car j'irai y parler d'
+                          a(target='_blank', href='https://twitter.com/EdCampQuebec', rel='noreferrer') @EdCampQuebec
+                          |  à l'émission NumeriQc! J'ai hâte! 😄 
+                          a(target='_blank', href='https://twitter.com/hashtag/edcampQc', rel='noreferrer') #edcampQc
+                        p
+                      // end div.messageBody
+                    // .tileInner
+                  .tile.ok.text.twitter(data-timestamp='1490817057', data-platform='twitter', data-id='847174257071329280', data-guid='twitter_847174257071329280', style='display: block;')
+                    .tileInner
+                      .info
+                        a.avatar(target='_blank', href='https://twitter.com/stardust_QA_NA')
+                          img.box_round4(src='https://pbs.twimg.com/profile_images/715988980840456192/UYGhw6tG_normal.jpg', onerror='replaceBrokenImage(this);')
+                        .meta
+                          a(target='_blank', href='https://twitter.com/stardust_QA_NA') StarDust N. America
+                          .socialIcon
+                          span 3 days ago
+                        // end div.meta
+                      // end div.info
+                      .message
+                        p
+                        p
+                          | Participants du 
+                          a(target='_blank', href='https://twitter.com/hashtag/WAQ17', rel='noreferrer') #WAQ17
+                          |  prenez RDV avec 
+                          a(target='_blank', href='https://twitter.com/nicolascavalie2', rel='noreferrer') @nicolascavalie2
+                          |  & 
+                          a(target='_blank', href='https://twitter.com/Guillaumeheuze', rel='noreferrer') @Guillaumeheuze
+                          |  de 
+                          a(target='_blank', href='https://twitter.com/stardust_QA_NA', rel='noreferrer') @stardust_QA_NA
+                          |  (spécialiste des tests… 
+                          a(href='https://t.co/2uLXFiqvTO') https://t.co/2uLXFiqvTO
+                        p
+                      // end div.messageBody
+                    // .tileInner
+                  .tile.ok.text.twitter(data-timestamp='1490807011', data-platform='twitter', data-id='847132122695565314', data-guid='twitter_847132122695565314', style='display: block;')
+                    .tileInner
+                      .info
+                        a.avatar(target='_blank', href='https://twitter.com/Kazendi')
+                          img.box_round4(src='https://pbs.twimg.com/profile_images/765220451459137536/IW-hI1qo_normal.jpg', onerror='replaceBrokenImage(this);')
+                        .meta
+                          a(target='_blank', href='https://twitter.com/Kazendi') Kazendi
+                          .socialIcon
+                          span 3 days ago
+                        // end div.meta
+                      // end div.info
+                      .message
+                        p
+                        p
+                          a(target='_blank', href='https://twitter.com/hashtag/WAQ17', rel='noreferrer') #WAQ17
+                          |  is just a week away! Our CEO 
+                          a(target='_blank', href='https://twitter.com/M_Doelle', rel='noreferrer') @M_Doelle
+                          |  is raring to go to discuss design & prototyping UI & UX for 
+                          a(target='_blank', href='https://twitter.com/HoloLens', rel='noreferrer') @HoloLens
+                          a(href='https://t.co/LsgWfIP8rc') https://t.co/LsgWfIP8rc
+                        p
+                      // end div.messageBody
+                    // .tileInner
+                  .tile.ok.image.instagram.ready(data-timestamp='1489781428', data-platform='instagram', data-id='1472715824242787658_2246732068', data-guid='instagram_1472715824242787658_2246732068', style='display: block;')
+                    .tileInner
+                      a.imageMain(href='https://www.instagram.com/p/BRwIz1HFoVK/', target='_blank')
+                        img(src='https://scontent.cdninstagram.com/t51.2885-15/s640x640/sh0.08/e35/c135.0.810.810/17267492_703404363173196_2887646284221513728_n.jpg', onerror='replaceBrokenImage(this);')
+                      .info
+                        a.avatar(target='_blank', href='https://instagram.com/kap.numerique')
+                          img.box_round4(src='https://scontent.cdninstagram.com/t51.2885-19/s150x150/12716838_1696376133975742_409055197_a.jpg', onerror='replaceBrokenImage(this);')
+                        .meta
+                          a(target='_blank', href='https://instagram.com/kap.numerique') Kap - Tactiques Numeriques
+                          .socialIcon
+                          span 15 days ago
+                        // end div.meta
+                      // end div.info
+                      .message
+                        p
+                        p On teste notre nouveau petit nid en ce beau vendredi. 🌞
+                        p
+                      // end div.messageBody
+                    // .tileInner
+                  .tile.ok.image.instagram.ready(data-timestamp='1489582430', data-platform='instagram', data-id='1471046500989851210_688779010', data-guid='instagram_1471046500989851210_688779010', style='display: block;')
+                    .tileInner
+                      a.imageMain(href='https://www.instagram.com/p/BRqNP-rlNZK/', target='_blank')
+                        img(src='https://scontent.cdninstagram.com/t51.2885-15/s640x640/sh0.08/e35/17332414_1826018607620712_5643200050390630400_n.jpg', onerror='replaceBrokenImage(this);')
+                      .info
+                        a.avatar(target='_blank', href='https://instagram.com/webaquebec')
+                          img.box_round4(src='https://scontent.cdninstagram.com/t51.2885-19/s150x150/15056634_1036703156439974_1129371863915429888_a.jpg', onerror='replaceBrokenImage(this);')
+                        .meta
+                          a(target='_blank', href='https://instagram.com/webaquebec') WAQ - Web à Québec
+                          .socialIcon
+                          span 17 days ago
+                        // end div.meta
+                      // end div.info
+                      .message
+                        p
+                        p
+                          | Amis étrangers qui venez au 
+                          a(target='_blank', href='https://instagram.com/explore/tags/waq17,/', rel='noreferrer') #waq17,
+                          |   la commande de neige est bien arrivée, on vous en garde pour dans 15 jours 💙🤗🦄⛄
+                        p
+                      // end div.messageBody
+                    // .tileInner
+                  .tile.ok.image.instagram.ready(data-timestamp='1489001596', data-platform='instagram', data-id='1466174117895105423_472348918', data-guid='instagram_1466174117895105423_472348918', style='display: block;')
+                    .tileInner
+                      a.imageMain(href='https://www.instagram.com/p/BRY5ZeUAmuP/', target='_blank')
+                        img(src='https://scontent.cdninstagram.com/t51.2885-15/s640x640/sh0.08/e35/17126196_1175690535877001_7869122673232576512_n.jpg', onerror='replaceBrokenImage(this);')
+                      .info
+                        a.avatar(target='_blank', href='https://instagram.com/quebecnumerique')
+                          img.box_round4(src='https://scontent.cdninstagram.com/t51.2885-19/s150x150/17127190_422976314715875_7584937975885070336_a.jpg', onerror='replaceBrokenImage(this);')
+                        .meta
+                          a(target='_blank', href='https://instagram.com/quebecnumerique') Québec numérique
+                          .socialIcon
+                          span 24 days ago
+                        // end div.meta
+                      // end div.info
+                      .message
+                        p
+                        p
+                          | C'est la Journée internationale de la femme et les femmes de Québec Numérique s'éclatent! On se met dans l'ambiance pour la 
+                          a(target='_blank', href='http://instagram.com/snquebec,', rel='noreferrer') @snquebec,
+                          |  le...
+                        p
+                      // end div.messageBody
+                    // .tileInner
+                  .tile.ok.image.instagram.ready(data-timestamp='1488216822', data-platform='instagram', data-id='1459590956089408775_688779010', data-guid='instagram_1459590956089408775_688779010', style='display: block;')
+                    .tileInner
+                      a.imageMain(href='https://www.instagram.com/p/BRBgj3HFP0H/', target='_blank')
+                        img(src='https://scontent.cdninstagram.com/t51.2885-15/e35/17077180_602982529902820_3753718012734078976_n.jpg', onerror='replaceBrokenImage(this);')
+                      .info
+                        a.avatar(target='_blank', href='https://instagram.com/webaquebec')
+                          img.box_round4(src='https://scontent.cdninstagram.com/t51.2885-19/s150x150/15056634_1036703156439974_1129371863915429888_a.jpg', onerror='replaceBrokenImage(this);')
+                        .meta
+                          a(target='_blank', href='https://instagram.com/webaquebec') WAQ - Web à Québec
+                          .socialIcon
+                          span 33 days ago
+                        // end div.meta
+                      // end div.info
+                      .message
+                        p
+                        p
+                          | 🔹PARTENAIRE PRINCIPAL🔹 
+                          br
+                          | Croyez-vous que les meilleures stratégies s’appuient sur des faits? Si oui, vous allez bien vous entendre avec 
+                          a(target='_blank', href='http://instagram.com/o2web,...', rel='noreferrer') @o2web,...
+                        p
+                      // end div.messageBody
+                    // .tileInner
+                  .tile.ok.image.instagram.ready(data-timestamp='1487602862', data-platform='instagram', data-id='1454440685457806920_688779010', data-guid='instagram_1454440685457806920_688779010', style='display: block;')
+                    .tileInner
+                      a.imageMain(href='https://www.instagram.com/p/BQvNhjzlpZI/', target='_blank')
+                        img(src='https://scontent.cdninstagram.com/t51.2885-15/s640x640/sh0.08/e35/c0.0.641.641/16584008_1381073408630996_3139017233859084288_n.jpg', onerror='replaceBrokenImage(this);')
+                      .info
+                        a.avatar(target='_blank', href='https://instagram.com/webaquebec')
+                          img.box_round4(src='https://scontent.cdninstagram.com/t51.2885-19/s150x150/15056634_1036703156439974_1129371863915429888_a.jpg', onerror='replaceBrokenImage(this);')
+                        .meta
+                          a(target='_blank', href='https://instagram.com/webaquebec') WAQ - Web à Québec
+                          .socialIcon
+                          span 40 days ago
+                        // end div.meta
+                      // end div.info
+                      .message
+                        p
+                        p
+                          | 🔹PARTENAIRE PRINCIPAL🔹
+                          br
+                          br
+                          | Nous nous considérons très chanceux de pouvoir compter Savoir-faire Linux parmi les principaux partenaires de notre 7ième...
+                        p
+                      // end div.messageBody
+                    // .tileInner
+                  .tile.ok.image.instagram.ready(data-timestamp='1486735794', data-platform='instagram', data-id='1447167187793393674_688779010', data-guid='instagram_1447167187793393674_688779010', style='display: block;')
+                    .tileInner
+                      a.imageMain(href='https://www.instagram.com/p/BQVXuPPBrgK/', target='_blank')
+                        img(src='https://scontent.cdninstagram.com/t51.2885-15/e35/16464508_1326459347418356_3801046155744247808_n.jpg', onerror='replaceBrokenImage(this);')
+                      .info
+                        a.avatar(target='_blank', href='https://instagram.com/webaquebec')
+                          img.box_round4(src='https://scontent.cdninstagram.com/t51.2885-19/s150x150/15056634_1036703156439974_1129371863915429888_a.jpg', onerror='replaceBrokenImage(this);')
+                        .meta
+                          a(target='_blank', href='https://instagram.com/webaquebec') WAQ - Web à Québec
+                          .socialIcon
+                          span 50 days ago
+                        // end div.meta
+                      // end div.info
+                      .message
+                        p
+                        p
+                          | 🔹PARTENAIRE PRINCIPAL🔹 
+                          br
+                          | Pour une 7e année, 
+                          a(target='_blank', href='http://instagram.com/libeocom', rel='noreferrer') @libeocom
+                          |  parmi nos principaux partenaires! Pour eux, innovation et défi sont les ingrédients de base...
+                        p
+                      // end div.messageBody
+                    // .tileInner
+                  .tile.ok.image.instagram.ready(data-timestamp='1485478104', data-platform='instagram', data-id='1436616920739884784_688779010', data-guid='instagram_1436616920739884784_688779010', style='display: block;')
+                    .tileInner
+                      a.imageMain(href='https://www.instagram.com/p/BPv43pXBC7w/', target='_blank')
+                        img(src='https://scontent.cdninstagram.com/t51.2885-15/s640x640/sh0.08/e35/c135.0.810.810/16110649_1726562247657106_4410256488946204672_n.jpg', onerror='replaceBrokenImage(this);')
+                      .info
+                        a.avatar(target='_blank', href='https://instagram.com/webaquebec')
+                          img.box_round4(src='https://scontent.cdninstagram.com/t51.2885-19/s150x150/15056634_1036703156439974_1129371863915429888_a.jpg', onerror='replaceBrokenImage(this);')
+                        .meta
+                          a(target='_blank', href='https://instagram.com/webaquebec') WAQ - Web à Québec
+                          .socialIcon
+                          span 65 days ago
+                        // end div.meta
+                      // end div.info
+                      .message
+                        p
+                        p
+                          | Des biscuits, des frites et des chips, que des bonnes choses pour cette soirée de préparation du 
+                          a(target='_blank', href='https://instagram.com/explore/tags/WAQ17/', rel='noreferrer') #WAQ17
+                          |   😎🙌
+                        p
+                      // end div.messageBody
+                    // .tileInner
+                .column(data-index='2', style='width: 33.3333%; top: 0px;')
+                  .tile.ok.image.instagram(data-timestamp='1491084635', data-platform='instagram', data-id='1483647914969498380_576963805', data-guid='instagram_1483647914969498380_576963805', style='display: block;')
+                    .tileInner
+                      a.imageMain(href='https://www.instagram.com/p/BSW-er_gYMM/', target='_blank')
+                        img(src='https://scontent.cdninstagram.com/t51.2885-15/s640x640/sh0.08/e35/c76.0.788.788/17662890_641907259333648_4957374638863679488_n.jpg', onerror='replaceBrokenImage(this);')
+                      .info
+                        a.avatar(target='_blank', href='https://instagram.com/vax_films')
+                          img.box_round4(src='https://scontent.cdninstagram.com/t51.2885-19/11849246_947142995331872_466932360_a.jpg', onerror='replaceBrokenImage(this);')
+                        .meta
+                          a(target='_blank', href='https://instagram.com/vax_films') VAX Films
+                          .socialIcon
+                          span 3 hours ago
+                        // end div.meta
+                      // end div.info
+                      .message
+                        p
+                        p
+                          | Nous sommes très fiers d'être l'agence vidéo qui a été mandaté par 
+                          a(target='_blank', href='http://instagram.com/quebecnumerique', rel='noreferrer') @quebecnumerique
+                          |  pour la couverture de la 
+                          a(target='_blank', href='https://instagram.com/explore/tags/snquebec17/', rel='noreferrer') #snquebec17
+                          |   et du 
+                          a(target='_blank', href='http://instagram.com/webaquebec.', rel='noreferrer') @webaquebec.
+                          br
+                          | Stay...
+                        p
+                      // end div.messageBody
+                    // .tileInner
+                  .tile.ok.text.twitter(data-timestamp='1491034941', data-platform='twitter', data-id='848088128195891200', data-guid='twitter_848088128195891200', style='display: block;')
+                    .tileInner
+                      .info
+                        a.avatar(target='_blank', href='https://twitter.com/audreyrivy')
+                          img.box_round4(src='https://pbs.twimg.com/profile_images/378800000697383386/bd6c07954470bbefb0c8abd142e89fc3_normal.jpeg', onerror='replaceBrokenImage(this);')
+                        .meta
+                          a(target='_blank', href='https://twitter.com/audreyrivy') Audrey Rivy
+                          .socialIcon
+                          span 17 hours ago
+                        // end div.meta
+                      // end div.info
+                      .message
+                        p
+                        p
+                          | J-1 pour Montréal !! On commence par 
+                          a(target='_blank', href='https://twitter.com/hashtag/SNQuebec17', rel='noreferrer') #SNQuebec17
+                          |  puis direction Québec pour le 
+                          a(target='_blank', href='https://twitter.com/hashtag/WAQ17', rel='noreferrer') #WAQ17
+                          |  avec 
+                          a(target='_blank', href='https://twitter.com/agencelunaweb', rel='noreferrer') @agencelunaweb
+                          |  et 
+                          a(target='_blank', href='https://twitter.com/uxrennes', rel='noreferrer') @uxrennes
+                        p
+                      // end div.messageBody
+                    // .tileInner
+                  .tile.ok.image.instagram(data-timestamp='1491009536', data-platform='instagram', data-id='1483017937850127705_688779010', data-guid='instagram_1483017937850127705_688779010', style='display: block;')
+                    .tileInner
+                      a.imageMain(href='https://www.instagram.com/p/BSUvPUFFtVZ/', target='_blank')
+                        img(src='https://scontent.cdninstagram.com/t51.2885-15/s640x640/sh0.08/e35/c0.117.937.937/17596356_295086574239040_265802799961341952_n.jpg', onerror='replaceBrokenImage(this);')
+                      .info
+                        a.avatar(target='_blank', href='https://instagram.com/webaquebec')
+                          img.box_round4(src='https://scontent.cdninstagram.com/t51.2885-19/s150x150/15056634_1036703156439974_1129371863915429888_a.jpg', onerror='replaceBrokenImage(this);')
+                        .meta
+                          a(target='_blank', href='https://instagram.com/webaquebec') WAQ - Web à Québec
+                          .socialIcon
+                          span 24 hours ago
+                        // end div.meta
+                      // end div.info
+                      .message
+                        p
+                        p
+                          | Petite surprise 
+                          a(target='_blank', href='https://instagram.com/explore/tags/Google/', rel='noreferrer') #Google
+                          |   ce soir ! Aviez-vous remarqué ?? 😻
+                          br
+                          a(target='_blank', href='https://instagram.com/explore/tags/WAQ17/', rel='noreferrer') #WAQ17
+                          a(target='_blank', href='https://instagram.com/explore/tags/PACMAN/', rel='noreferrer') #PACMAN
+                          a(target='_blank', href='https://instagram.com/explore/tags/gamer/', rel='noreferrer') #gamer
+                          a(target='_blank', href='https://instagram.com/explore/tags/GameOn/', rel='noreferrer') #GameOn
+                          a(target='_blank', href='https://instagram.com/explore/tags/SNQuebec17/', rel='noreferrer') #SNQuebec17
+                          a(target='_blank', href='https://instagram.com/explore/tags/QuebecCity/', rel='noreferrer') #QuebecCity
+                          a(target='_blank', href='https://instagram.com/explore/tags/Googlemaps/', rel='noreferrer') #Googlemaps
+                        p
+                      // end div.messageBody
+                    // .tileInner
+                  .tile.ok.image.instagram(data-timestamp='1490999236', data-platform='instagram', data-id='1482931539029610454_688779010', data-guid='instagram_1482931539029610454_688779010', style='display: block;')
+                    .tileInner
+                      a.imageMain(href='https://www.instagram.com/p/BSUbmC6FU_W/', target='_blank')
+                        img(src='https://scontent.cdninstagram.com/t51.2885-15/s640x640/sh0.08/e35/c0.135.1080.1080/17596235_200414540448081_6936828334336638976_n.jpg', onerror='replaceBrokenImage(this);')
+                      .info
+                        a.avatar(target='_blank', href='https://instagram.com/webaquebec')
+                          img.box_round4(src='https://scontent.cdninstagram.com/t51.2885-19/s150x150/15056634_1036703156439974_1129371863915429888_a.jpg', onerror='replaceBrokenImage(this);')
+                        .meta
+                          a(target='_blank', href='https://instagram.com/webaquebec') WAQ - Web à Québec
+                          .socialIcon
+                          span 1 day ago
+                        // end div.meta
+                      // end div.info
+                      .message
+                        p
+                        p
+                          | Kick off communication du 
+                          a(target='_blank', href='https://instagram.com/explore/tags/waq17,/', rel='noreferrer') #waq17,
+                          |   on est bouillant !
+                        p
+                      // end div.messageBody
+                    // .tileInner
+                  .tile.ok.text.twitter(data-timestamp='1490995364', data-platform='twitter', data-id='847922132688355328', data-guid='twitter_847922132688355328', style='display: block;')
+                    .tileInner
+                      .info
+                        a.avatar(target='_blank', href='https://twitter.com/MTLbuzz')
+                          img.box_round4(src='https://pbs.twimg.com/profile_images/632686867490697219/fsD6P921_normal.png', onerror='replaceBrokenImage(this);')
+                        .meta
+                          a(target='_blank', href='https://twitter.com/MTLbuzz') Montreal Design Buzz
+                          .socialIcon
+                          span 1 day ago
+                        // end div.meta
+                      // end div.info
+                      .message
+                        p
+                        p
+                          | TR: 
+                          a(target='_blank', href='https://twitter.com/tinkweb:', rel='noreferrer') @tinkweb:
+                          |  Tink sera présente au prochain 
+                          a(target='_blank', href='https://twitter.com/hashtag/WAQ17', rel='noreferrer') #WAQ17
+                          |  du 4 au 6 avril! 
+                          a(target='_blank', href='https://twitter.com/hashtag/num%C3%A9rique', rel='noreferrer') #numérique
+                          a(href='https://t.co/n57ApdOmMA%F0%9F%99%8C%E2%80%A6') https://t.co/n57ApdOmMA🙌…
+                          a(href='https://t.co/oFpi6rYWS0') https://t.co/oFpi6rYWS0
+                        p
+                      // end div.messageBody
+                    // .tileInner
+                  .tile.ok.image.twitter(data-timestamp='1490994468', data-platform='twitter', data-id='847918372708917248', data-guid='twitter_847918372708917248', style='display: block;')
+                    .tileInner
+                      a.imageMain(href='https://twitter.com/statuses/847918372708917248', target='_blank')
+                        img(src='https://pbs.twimg.com/media/C8RpOKLUAAAocCQ.jpg', onerror='replaceBrokenImage(this);')
+                      .info
+                        a.avatar(target='_blank', href='https://twitter.com/tinkweb')
+                          img.box_round4(src='https://pbs.twimg.com/profile_images/800824039136600064/WZlSIRLQ_normal.jpg', onerror='replaceBrokenImage(this);')
+                        .meta
+                          a(target='_blank', href='https://twitter.com/tinkweb') Tink
+                          .socialIcon
+                          span 1 day ago
+                        // end div.meta
+                      // end div.info
+                      .message
+                        p
+                        p
+                          | Tink sera présente au prochain 
+                          a(target='_blank', href='https://twitter.com/hashtag/WAQ17', rel='noreferrer') #WAQ17
+                          |  du 4 au 6 avril! 
+                          a(target='_blank', href='https://twitter.com/hashtag/num%C3%A9rique', rel='noreferrer') #numérique
+                          a(href='https://t.co/oviGbnuQdO%F0%9F%99%8C') https://t.co/oviGbnuQdO🙌
+                          a(href='https://t.co/vMvZEepjy9') https://t.co/vMvZEepjy9
+                        p
+                      // end div.messageBody
+                    // .tileInner
+                  .tile.ok.text.twitter(data-timestamp='1490972151', data-platform='twitter', data-id='847824767415660544', data-guid='twitter_847824767415660544', style='display: block;')
+                    .tileInner
+                      .info
+                        a.avatar(target='_blank', href='https://twitter.com/Kap_numerique')
+                          img.box_round4(src='https://pbs.twimg.com/profile_images/697843283473530880/fZ4gsx0a_normal.jpg', onerror='replaceBrokenImage(this);')
+                        .meta
+                          a(target='_blank', href='https://twitter.com/Kap_numerique') Kap
+                          .socialIcon
+                          span 1 day ago
+                        // end div.meta
+                      // end div.info
+                      .message
+                        p
+                        p
+                          | La team Kap est prête pour le 
+                          a(target='_blank', href='https://twitter.com/hashtag/WAQ17', rel='noreferrer') #WAQ17
+                          |  ! On est fiers de gérer les com de ce super événement et on s'est promis de fa… 
+                          a(href='https://t.co/29eY5sqWC3') https://t.co/29eY5sqWC3
+                        p
+                      // end div.messageBody
+                    // .tileInner
+                  .tile.ok.text.twitter(data-timestamp='1490969395', data-platform='twitter', data-id='847813207955734536', data-guid='twitter_847813207955734536', style='display: block;')
+                    .tileInner
+                      .info
+                        a.avatar(target='_blank', href='https://twitter.com/agencelunaweb')
+                          img.box_round4(src='https://pbs.twimg.com/profile_images/501671936745684992/n791vf7a_normal.jpeg', onerror='replaceBrokenImage(this);')
+                        .meta
+                          a(target='_blank', href='https://twitter.com/agencelunaweb') Agence LunaWeb
+                          .socialIcon
+                          span 1 day ago
+                        // end div.meta
+                      // end div.info
+                      .message
+                        p
+                        p
+                          | Décollage dimanche pour Montréal et Québec ! L'équipe est aux anges de pourvoir participer au 
+                          a(target='_blank', href='https://twitter.com/hashtag/SNQuebec17', rel='noreferrer') #SNQuebec17
+                          |  et 
+                          a(target='_blank', href='https://twitter.com/hashtag/WAQ17%E2%80%A6', rel='noreferrer') #WAQ17…
+                          a(href='https://t.co/COvmxJ4m5B') https://t.co/COvmxJ4m5B
+                        p
+                      // end div.messageBody
+                    // .tileInner
+                  .tile.ok.text.twitter(data-timestamp='1490961366', data-platform='twitter', data-id='847779533814202368', data-guid='twitter_847779533814202368', style='display: block;')
+                    .tileInner
+                      .info
+                        a.avatar(target='_blank', href='https://twitter.com/Florencemdv')
+                          img.box_round4(src='https://pbs.twimg.com/profile_images/742922170108653568/16hWMon4_normal.jpg', onerror='replaceBrokenImage(this);')
+                        .meta
+                          a(target='_blank', href='https://twitter.com/Florencemdv') Flo MorelDesVallons
+                          .socialIcon
+                          span 2 days ago
+                        // end div.meta
+                      // end div.info
+                      .message
+                        p
+                        p
+                          | Comme disent mes amis québécois, je capote cette aprem à J-1 avant mon départ pr le 
+                          a(target='_blank', href='https://twitter.com/hashtag/waq17', rel='noreferrer') #waq17
+                          |  !! La 
+                          a(target='_blank', href='https://twitter.com/hashtag/nantestech', rel='noreferrer') #nantestech
+                          |  sera là ? 
+                          a(target='_blank', href='https://twitter.com/hashtag/web2waq', rel='noreferrer') #web2waq
+                          a(target='_blank', href='https://twitter.com/webaquebec', rel='noreferrer') @webaquebec
+                        p
+                      // end div.messageBody
+                    // .tileInner
+                  .tile.ok.text.twitter(data-timestamp='1490910289', data-platform='twitter', data-id='847565300329361408', data-guid='twitter_847565300329361408', style='display: block;')
+                    .tileInner
+                      .info
+                        a.avatar(target='_blank', href='https://twitter.com/Jason_Brown_')
+                          img.box_round4(src='https://pbs.twimg.com/profile_images/806252174653214720/uctkRHuV_normal.jpg', onerror='replaceBrokenImage(this);')
+                        .meta
+                          a(target='_blank', href='https://twitter.com/Jason_Brown_') Jason Brown
+                          .socialIcon
+                          span 2 days ago
+                        // end div.meta
+                      // end div.info
+                      .message
+                        p
+                        p
+                          a(target='_blank', href='https://twitter.com/clarklab', rel='noreferrer') @clarklab
+                          a(target='_blank', href='https://twitter.com/principleapp', rel='noreferrer') @principleapp
+                          |  whats 
+                          a(target='_blank', href='https://twitter.com/hashtag/WAQ17?', rel='noreferrer') #WAQ17?
+                        p
+                      // end div.messageBody
+                    // .tileInner
+                  .tile.ok.text.twitter(data-timestamp='1490887654', data-platform='twitter', data-id='847470363747295233', data-guid='twitter_847470363747295233', style='display: block;')
+                    .tileInner
+                      .info
+                        a.avatar(target='_blank', href='https://twitter.com/SNQuebec')
+                          img.box_round4(src='https://pbs.twimg.com/profile_images/824220375575908352/Am68jdLL_normal.jpg', onerror='replaceBrokenImage(this);')
+                        .meta
+                          a(target='_blank', href='https://twitter.com/SNQuebec') Semaine Numérique QC
+                          .socialIcon
+                          span 2 days ago
+                        // end div.meta
+                      // end div.info
+                      .message
+                        p
+                        p
+                          | Participants de la 
+                          a(target='_blank', href='https://twitter.com/hashtag/SNQuebec17', rel='noreferrer') #SNQuebec17
+                          |  ou du 
+                          a(target='_blank', href='https://twitter.com/hashtag/WAQ17,', rel='noreferrer') #WAQ17,
+                          |  planifiez vos rendez-vous d'affaires avec le module de Rencontres BDC.… 
+                          a(href='https://t.co/5IGHjR5Ou5') https://t.co/5IGHjR5Ou5
+                        p
+                      // end div.messageBody
+                    // .tileInner
+                  .tile.ok.image.twitter(data-timestamp='1490857205', data-platform='twitter', data-id='847342651258961920', data-guid='twitter_847342651258961920', style='display: block;')
+                    .tileInner
+                      a.imageMain(href='https://twitter.com/statuses/847342651258961920', target='_blank')
+                        img(src='https://pbs.twimg.com/media/C8JdpkpUAAMYpW2.jpg', onerror='replaceBrokenImage(this);')
+                      .info
+                        a.avatar(target='_blank', href='https://twitter.com/boxNservices')
+                          img.box_round4(src='https://pbs.twimg.com/profile_images/790935304320520192/8OZ1a_nN_normal.jpg', onerror='replaceBrokenImage(this);')
+                        .meta
+                          a(target='_blank', href='https://twitter.com/boxNservices') box'n services
+                          .socialIcon
+                          span 3 days ago
+                        // end div.meta
+                      // end div.info
+                      .message
+                        p
+                        p
+                          | ☝🏻💥  [ J- 5 AVANT LE 
+                          a(target='_blank', href='https://twitter.com/webaquebec', rel='noreferrer') @webaquebec
+                          |  ]
+                          br
+                          | On a déjà hâte d'y être !
+                          br
+                          a(target='_blank', href='https://twitter.com/hashtag/num%C3%A9rique', rel='noreferrer') #numérique
+                          a(target='_blank', href='https://twitter.com/hashtag/innovation', rel='noreferrer') #innovation
+                          a(target='_blank', href='https://twitter.com/hashtag/WAQ17', rel='noreferrer') #WAQ17
+                          a(target='_blank', href='https://twitter.com/hashtag/QcNum', rel='noreferrer') #QcNum
+                          a(target='_blank', href='https://twitter.com/hashtag/NantesTech', rel='noreferrer') #NantesTech
+                          a(href='https://t.co/OLP47ykW3L') https://t.co/OLP47ykW3L
+                        p
+                      // end div.messageBody
+                    // .tileInner
+                  .tile.ok.image.twitter(data-timestamp='1490856034', data-platform='twitter', data-id='847337740878331906', data-guid='twitter_847337740878331906', style='display: block;')
+                    .tileInner
+                      a.imageMain(href='https://twitter.com/statuses/847337740878331906', target='_blank')
+                        img(src='https://pbs.twimg.com/tweet_video_thumb/C8JZLRJV0AEISsP.jpg', onerror='replaceBrokenImage(this);')
+                      .info
+                        a.avatar(target='_blank', href='https://twitter.com/LoreenaReginato')
+                          img.box_round4(src='https://pbs.twimg.com/profile_images/778300893489922048/LJvtScUv_normal.jpg', onerror='replaceBrokenImage(this);')
+                        .meta
+                          a(target='_blank', href='https://twitter.com/LoreenaReginato') Loreena
+                          .socialIcon
+                          span 3 days ago
+                        // end div.meta
+                      // end div.info
+                      .message
+                        p
+                        p
+                          a(target='_blank', href='https://twitter.com/QcNum', rel='noreferrer') @QcNum
+                          |  à la 
+                          a(target='_blank', href='https://twitter.com/hashtag/WAQ17', rel='noreferrer') #WAQ17
+                          |  ! 🤗 
+                          a(href='https://t.co/kFCnzhkvAR') https://t.co/kFCnzhkvAR
+                        p
+                      // end div.messageBody
+                    // .tileInner
+                  .tile.ok.text.twitter(data-timestamp='1490802866', data-platform='twitter', data-id='847114738484043776', data-guid='twitter_847114738484043776', style='display: block;')
+                    .tileInner
+                      .info
+                        a.avatar(target='_blank', href='https://twitter.com/Florencemdv')
+                          img.box_round4(src='https://pbs.twimg.com/profile_images/742922170108653568/16hWMon4_normal.jpg', onerror='replaceBrokenImage(this);')
+                        .meta
+                          a(target='_blank', href='https://twitter.com/Florencemdv') Flo MorelDesVallons
+                          .socialIcon
+                          span 3 days ago
+                        // end div.meta
+                      // end div.info
+                      .message
+                        p
+                        p
+                          | J-6 avant le 
+                          a(target='_blank', href='https://twitter.com/webaquebec', rel='noreferrer') @webaquebec
+                          |  hâte de faire de belles découvertes et de belles rencontres ! 
+                          a(target='_blank', href='https://twitter.com/hashtag/waq17', rel='noreferrer') #waq17
+                          a(target='_blank', href='https://twitter.com/hashtag/web2waq', rel='noreferrer') #web2waq
+                          a(target='_blank', href='https://twitter.com/hashtag/Nantes', rel='noreferrer') #Nantes
+                          a(target='_blank', href='https://twitter.com/hashtag/Qu%C3%A9bec', rel='noreferrer') #Québec
+                        p
+                      // end div.messageBody
+                    // .tileInner
+                  .tile.ok.text.twitter(data-timestamp='1490802482', data-platform='twitter', data-id='847113127393144837', data-guid='twitter_847113127393144837', style='display: block;')
+                    .tileInner
+                      .info
+                        a.avatar(target='_blank', href='https://twitter.com/M_Doelle')
+                          img.box_round4(src='https://pbs.twimg.com/profile_images/753262778014699520/Y29DwFAR_normal.jpg', onerror='replaceBrokenImage(this);')
+                        .meta
+                          a(target='_blank', href='https://twitter.com/M_Doelle') Maximilian Doelle
+                          .socialIcon
+                          span 3 days ago
+                        // end div.meta
+                      // end div.info
+                      .message
+                        p
+                        p
+                          | Looking forward to 
+                          a(target='_blank', href='https://twitter.com/hashtag/WAQ17', rel='noreferrer') #WAQ17
+                          |  in just one week to discuss UI and UX design and prototyping for 
+                          a(target='_blank', href='https://twitter.com/hashtag/Microsoft', rel='noreferrer') #Microsoft
+                          a(target='_blank', href='https://twitter.com/HoloLens', rel='noreferrer') @HoloLens
+                          a(href='https://t.co/ltw3DlACL0') https://t.co/ltw3DlACL0
+                        p
+                      // end div.messageBody
+                    // .tileInner
+                  .tile.ok.image.instagram(data-timestamp='1490375410', data-platform='instagram', data-id='1477698506121599147_1709940592', data-guid='instagram_1477698506121599147_1709940592', style='display: block;')
+                    .tileInner
+                      a.imageMain(href='https://www.instagram.com/p/BSB1vZOgNir/', target='_blank')
+                        img(src='https://scontent.cdninstagram.com/t51.2885-15/s640x640/sh0.08/e35/17438847_959453604188886_4139649531841085440_n.jpg', onerror='replaceBrokenImage(this);')
+                      .info
+                        a.avatar(target='_blank', href='https://instagram.com/sigmund_ca')
+                          img.box_round4(src='https://scontent.cdninstagram.com/t51.2885-19/s150x150/17437493_272460306512716_3208023378187255808_a.jpg', onerror='replaceBrokenImage(this);')
+                        .meta
+                          a(target='_blank', href='https://instagram.com/sigmund_ca') Sigmund
+                          .socialIcon
+                          span 8 days ago
+                        // end div.meta
+                      // end div.info
+                      .message
+                        p
+                        p
+                          | Mylène est bin excitée d'avoir reçu son billet! On se voit au WAQ? 
+                          a(target='_blank', href='https://instagram.com/explore/tags/viedagence/', rel='noreferrer') #viedagence
+                          a(target='_blank', href='https://instagram.com/explore/tags/WAQ17/', rel='noreferrer') #WAQ17
+                          a(target='_blank', href='https://instagram.com/explore/tags/UX/', rel='noreferrer') #UX
+                        p
+                      // end div.messageBody
+                    // .tileInner
+                  .tile.ok.image.instagram(data-timestamp='1490219216', data-platform='instagram', data-id='1476388257311055831_1622240', data-guid='instagram_1476388257311055831_1622240', style='display: block;')
+                    .tileInner
+                      a.imageMain(href='https://www.instagram.com/p/BR9L0w7lV_X/', target='_blank')
+                        img(src='https://scontent.cdninstagram.com/t51.2885-15/s640x640/sh0.08/e35/17438291_1264511896918272_2142627972723507200_n.jpg', onerror='replaceBrokenImage(this);')
+                      .info
+                        a.avatar(target='_blank', href='https://instagram.com/riomarti')
+                          img.box_round4(src='https://scontent.cdninstagram.com/t51.2885-19/s150x150/16110480_231387753972804_796440636378054656_n.jpg', onerror='replaceBrokenImage(this);')
+                        .meta
+                          a(target='_blank', href='https://instagram.com/riomarti') Martine rioux
+                          .socialIcon
+                          span 10 days ago
+                        // end div.meta
+                      // end div.info
+                      .message
+                        p
+                        p
+                          | Dernier sprint avant le 
+                          a(target='_blank', href='http://instagram.com/webaquebec', rel='noreferrer') @webaquebec
+                          |  , le plus important événement numérique francophone en Amérique du Nord!! En rencontre avec les responsables de...
+                        p
+                      // end div.messageBody
+                    // .tileInner
+                  .tile.ok.image.instagram.ready(data-timestamp='1489013183', data-platform='instagram', data-id='1466271316066763441_688779010', data-guid='instagram_1466271316066763441_688779010', style='display: block;')
+                    .tileInner
+                      a.imageMain(href='https://www.instagram.com/p/BRZPf5KgQKx/', target='_blank')
+                        img(src='https://scontent.cdninstagram.com/t51.2885-15/s640x640/sh0.08/e35/c0.135.1080.1080/17076214_1245689718879730_7485504990446878720_n.jpg', onerror='replaceBrokenImage(this);')
+                      .info
+                        a.avatar(target='_blank', href='https://instagram.com/webaquebec')
+                          img.box_round4(src='https://scontent.cdninstagram.com/t51.2885-19/s150x150/15056634_1036703156439974_1129371863915429888_a.jpg', onerror='replaceBrokenImage(this);')
+                        .meta
+                          a(target='_blank', href='https://instagram.com/webaquebec') WAQ - Web à Québec
+                          .socialIcon
+                          span 24 days ago
+                        // end div.meta
+                      // end div.info
+                      .message
+                        p
+                        p
+                          | Démarrer une réunion 
+                          a(target='_blank', href='https://instagram.com/explore/tags/waq17/', rel='noreferrer') #waq17
+                          |   par un test des mets qui vous seront servi dans un mois, ça ne se refuse pas 😋
+                        p
+                      // end div.messageBody
+                    // .tileInner
+                  .tile.ok.image.instagram.ready(data-timestamp='1488999386', data-platform='instagram', data-id='1466155577713669460_763740320', data-guid='instagram_1466155577713669460_763740320', style='display: block;')
+                    .tileInner
+                      a.imageMain(href='https://www.instagram.com/p/BRY1LrbFLVU/', target='_blank')
+                        img(src='https://scontent.cdninstagram.com/t51.2885-15/s480x480/e35/c236.0.607.607/17126437_401798090178926_7136127199261753344_n.jpg', onerror='replaceBrokenImage(this);')
+                      .info
+                        a.avatar(target='_blank', href='https://instagram.com/reconquistadarling')
+                          img.box_round4(src='https://scontent.cdninstagram.com/t51.2885-19/s150x150/16906344_1311301225615615_8053158847885344768_a.jpg', onerror='replaceBrokenImage(this);')
+                        .meta
+                          a(target='_blank', href='https://instagram.com/reconquistadarling') Floriane
+                          .socialIcon
+                          span 24 days ago
+                        // end div.meta
+                      // end div.info
+                      .message
+                        p
+                        p
+                          | Soon... 
+                          a(target='_blank', href='https://instagram.com/explore/tags/montreal/', rel='noreferrer') #montreal
+                          a(target='_blank', href='https://instagram.com/explore/tags/quebec/', rel='noreferrer') #quebec
+                          a(target='_blank', href='https://instagram.com/explore/tags/quebeccity/', rel='noreferrer') #quebeccity
+                          a(target='_blank', href='https://instagram.com/explore/tags/projectlife/', rel='noreferrer') #projectlife
+                          a(target='_blank', href='https://instagram.com/explore/tags/school/', rel='noreferrer') #school
+                          a(target='_blank', href='https://instagram.com/explore/tags/ecs/', rel='noreferrer') #ecs
+                          a(target='_blank', href='https://instagram.com/explore/tags/waq17/', rel='noreferrer') #waq17
+                        p
+                      // end div.messageBody
+                    // .tileInner
+                  .tile.ok.image.instagram.ready(data-timestamp='1488833847', data-platform='instagram', data-id='1464766934783366535_688779010', data-guid='instagram_1464766934783366535_688779010', style='display: block;')
+                    .tileInner
+                      a.imageMain(href='https://www.instagram.com/p/BRT5cQ6gBWH/', target='_blank')
+                        img(src='https://scontent.cdninstagram.com/t51.2885-15/e35/17125416_1820188708230807_7904287378666160128_n.jpg', onerror='replaceBrokenImage(this);')
+                      .info
+                        a.avatar(target='_blank', href='https://instagram.com/webaquebec')
+                          img.box_round4(src='https://scontent.cdninstagram.com/t51.2885-19/s150x150/15056634_1036703156439974_1129371863915429888_a.jpg', onerror='replaceBrokenImage(this);')
+                        .meta
+                          a(target='_blank', href='https://instagram.com/webaquebec') WAQ - Web à Québec
+                          .socialIcon
+                          span 26 days ago
+                        // end div.meta
+                      // end div.info
+                      .message
+                        p
+                        p
+                          | 🔹PARTENAIRE PRINCIPAL🔹 
+                          br
+                          | Impossible de ne pas penser à 
+                          a(target='_blank', href='http://instagram.com/ibm', rel='noreferrer') @ibm
+                          |  quand on pense aux innovations technologiques. Avec Watson et ses percés en Intelligence...
+                        p
+                      // end div.messageBody
+                    // .tileInner
+                  .tile.ok.image.instagram.ready(data-timestamp='1487955520', data-platform='instagram', data-id='1457398997694323171_688779010', data-guid='instagram_1457398997694323171_688779010', style='display: block;')
+                    .tileInner
+                      a.imageMain(href='https://www.instagram.com/p/BQ5uKqxlJnj/', target='_blank')
+                        img(src='https://scontent.cdninstagram.com/t51.2885-15/e15/16789353_1879477949004839_2808868487999520768_n.jpg', onerror='replaceBrokenImage(this);')
+                      .info
+                        a.avatar(target='_blank', href='https://instagram.com/webaquebec')
+                          img.box_round4(src='https://scontent.cdninstagram.com/t51.2885-19/s150x150/15056634_1036703156439974_1129371863915429888_a.jpg', onerror='replaceBrokenImage(this);')
+                        .meta
+                          a(target='_blank', href='https://instagram.com/webaquebec') WAQ - Web à Québec
+                          .socialIcon
+                          span 36 days ago
+                        // end div.meta
+                      // end div.info
+                      .message
+                        p
+                        p
+                          | Merci à 
+                          a(target='_blank', href='http://instagram.com/libeocom', rel='noreferrer') @libeocom
+                          |  d'avoir immortalisé nos souvenirs du 
+                          a(target='_blank', href='https://instagram.com/explore/tags/WAQ16!/', rel='noreferrer') #WAQ16!
+                          |   Un petit train avec nos directeurs des communications 2016-2017, ça vaut de l'or...
+                        p
+                      // end div.messageBody
+                    // .tileInner
+                  .tile.ok.image.instagram.ready(data-timestamp='1487170008', data-platform='instagram', data-id='1450809644581935437_688779010', data-guid='instagram_1450809644581935437_688779010', style='display: block;')
+                    .tileInner
+                      a.imageMain(href='https://www.instagram.com/p/BQiT69eBFlN/', target='_blank')
+                        img(src='https://scontent.cdninstagram.com/t51.2885-15/s320x320/e35/c90.0.369.369/16789070_225581934571293_264018399963643904_n.jpg', onerror='replaceBrokenImage(this);')
+                      .info
+                        a.avatar(target='_blank', href='https://instagram.com/webaquebec')
+                          img.box_round4(src='https://scontent.cdninstagram.com/t51.2885-19/s150x150/15056634_1036703156439974_1129371863915429888_a.jpg', onerror='replaceBrokenImage(this);')
+                        .meta
+                          a(target='_blank', href='https://instagram.com/webaquebec') WAQ - Web à Québec
+                          .socialIcon
+                          span 45 days ago
+                        // end div.meta
+                      // end div.info
+                      .message
+                        p
+                        p
+                          | PARTENAIRE// L'Hôtel PUR Québec est l’hôtel Officiel du 
+                          a(target='_blank', href='https://instagram.com/explore/tags/WAQ17!/', rel='noreferrer') #WAQ17!
+                          br
+                          | Imaginez dormir dans cet hôtel moderne et confortable situé au cœur du quartier...
+                        p
+                      // end div.messageBody
+                    // .tileInner
+                  .tile.ok.image.instagram.ready(data-timestamp='1486391955', data-platform='instagram', data-id='1444282864949997235_688779010', data-guid='instagram_1444282864949997235_688779010', style='display: block;')
+                    .tileInner
+                      a.imageMain(href='https://www.instagram.com/p/BQLH50Qhy6z/', target='_blank')
+                        img(src='https://scontent.cdninstagram.com/t51.2885-15/s640x640/sh0.08/e35/c0.0.641.641/16583847_266696320428948_8045551782199296000_n.jpg', onerror='replaceBrokenImage(this);')
+                      .info
+                        a.avatar(target='_blank', href='https://instagram.com/webaquebec')
+                          img.box_round4(src='https://scontent.cdninstagram.com/t51.2885-19/s150x150/15056634_1036703156439974_1129371863915429888_a.jpg', onerror='replaceBrokenImage(this);')
+                        .meta
+                          a(target='_blank', href='https://instagram.com/webaquebec') WAQ - Web à Québec
+                          .socialIcon
+                          span 54 days ago
+                        // end div.meta
+                      // end div.info
+                      .message
+                        p
+                        p
+                          | 🔹 PARTENAIRE PRINCIPAL🔹
+                          br
+                          br
+                          | Depuis plus de 20 ans, 
+                          a(target='_blank', href='http://instagram.com/chez_ixmedia', rel='noreferrer') @chez_ixmedia
+                          |  aide différentes entreprises publiques ou privées à adopter des solutions...
+                        p
+                      // end div.messageBody
+                    // .tileInner
+                .column(data-index='3', style='width: 33.3333%; top: 0px;')
+                  .tile.ok.image.instagram(data-timestamp='1491046297', data-platform='instagram', data-id='1483326315762672216_104943230', data-guid='instagram_1483326315762672216_104943230', style='display: block;')
+                    .tileInner
+                      a.imageMain(href='https://www.instagram.com/p/BSV1WzZBeJY/', target='_blank')
+                        img(src='https://scontent.cdninstagram.com/t51.2885-15/s640x640/sh0.08/e35/17662569_1876649465906622_5909393658016169984_n.jpg', onerror='replaceBrokenImage(this);')
+                      .info
+                        a.avatar(target='_blank', href='https://instagram.com/axl971')
+                          img.box_round4(src='https://scontent.cdninstagram.com/t51.2885-19/s150x150/15802002_360738624289901_3769341291280728064_n.jpg', onerror='replaceBrokenImage(this);')
+                        .meta
+                          a(target='_blank', href='https://instagram.com/axl971') Axelle Kaulanjan
+                          .socialIcon
+                          span 13 hours ago
+                        // end div.meta
+                      // end div.info
+                      .message
+                        p
+                        p
+                          | Good morning! Now on my screen: le programme de mission OFQJ pour la 
+                          a(target='_blank', href='https://instagram.com/explore/tags/SNQuebec17/', rel='noreferrer') #SNQuebec17
+                          |   , parcours "Femmes et numérique". Départ de la délégation 
+                          a(target='_blank', href='https://instagram.com/explore/tags/Guadeloupe.../', rel='noreferrer') #Guadeloupe...
+                        p
+                      // end div.messageBody
+                    // .tileInner
+                  .tile.ok.text.twitter(data-timestamp='1491039105', data-platform='twitter', data-id='848105595379077121', data-guid='twitter_848105595379077121', style='display: block;')
+                    .tileInner
+                      .info
+                        a.avatar(target='_blank', href='https://twitter.com/DIBS13')
+                          img.box_round4(src='https://pbs.twimg.com/profile_images/757914503443013632/_WV1NYlZ_normal.jpg', onerror='replaceBrokenImage(this);')
+                        .meta
+                          a(target='_blank', href='https://twitter.com/DIBS13') DIBS
+                          .socialIcon
+                          span 15 hours ago
+                        // end div.meta
+                      // end div.info
+                      .message
+                        p
+                        p
+                          | The latest DIBS INFOS! 
+                          a(href='https://t.co/RiCPU30Sqx') https://t.co/RiCPU30Sqx
+                          a(target='_blank', href='https://twitter.com/hashtag/snquebec17', rel='noreferrer') #snquebec17
+                          a(target='_blank', href='https://twitter.com/hashtag/waq17', rel='noreferrer') #waq17
+                        p
+                      // end div.messageBody
+                    // .tileInner
+                  .tile.ok.image.instagram(data-timestamp='1491014920', data-platform='instagram', data-id='1483063098129721602_2576331', data-guid='instagram_1483063098129721602_2576331', style='display: block;')
+                    .tileInner
+                      a.imageMain(href='https://www.instagram.com/p/BSU5ge3gykC/', target='_blank')
+                        img(src='https://scontent.cdninstagram.com/t51.2885-15/s640x640/sh0.08/e35/c0.117.937.937/17587505_1333364823414698_4457170240626753536_n.jpg', onerror='replaceBrokenImage(this);')
+                      .info
+                        a.avatar(target='_blank', href='https://instagram.com/mkgasse')
+                          img.box_round4(src='https://scontent.cdninstagram.com/t51.2885-19/s150x150/15101642_1718577891793594_6664166243970318336_a.jpg', onerror='replaceBrokenImage(this);')
+                        .meta
+                          a(target='_blank', href='https://instagram.com/mkgasse') Marie-Kristine Gasse
+                          .socialIcon
+                          span 22 hours ago
+                        // end div.meta
+                      // end div.info
+                      .message
+                        p
+                        p
+                          | Nice 🎮 ! 
+                          a(target='_blank', href='https://instagram.com/explore/tags/GameOn/', rel='noreferrer') #GameOn
+                          a(target='_blank', href='https://instagram.com/explore/tags/pacman/', rel='noreferrer') #pacman
+                          a(target='_blank', href='https://instagram.com/explore/tags/GoogleMaps/', rel='noreferrer') #GoogleMaps
+                          a(target='_blank', href='https://instagram.com/explore/tags/quebec/', rel='noreferrer') #quebec
+                          a(target='_blank', href='https://instagram.com/explore/tags/Limoilou/', rel='noreferrer') #Limoilou
+                          a(target='_blank', href='https://instagram.com/explore/tags/gamergirl/', rel='noreferrer') #gamergirl
+                          a(target='_blank', href='https://instagram.com/explore/tags/WAQ17/', rel='noreferrer') #WAQ17
+                        p
+                      // end div.messageBody
+                    // .tileInner
+                  .tile.ok.text.twitter(data-timestamp='1491007822', data-platform='twitter', data-id='847974385705156608', data-guid='twitter_847974385705156608', style='display: block;')
+                    .tileInner
+                      .info
+                        a.avatar(target='_blank', href='https://twitter.com/LesNews')
+                          img.box_round4(src='https://pbs.twimg.com/profile_images/757388832601939968/c35A8HWZ_normal.jpg', onerror='replaceBrokenImage(this);')
+                        .meta
+                          a(target='_blank', href='https://twitter.com/LesNews') LesNews
+                          .socialIcon
+                          span 1 day ago
+                        // end div.meta
+                      // end div.info
+                      .message
+                        p
+                        p
+                          | CANADA - Des acteurs du numérique au coeur d’une semaine d’échanges à Québec. /via  
+                          a(href='https://t.co/CU9JlCVNmY') https://t.co/CU9JlCVNmY
+                          a(target='_blank', href='https://twitter.com/hashtag/SNQuebec17', rel='noreferrer') #SNQuebec17
+                          a(target='_blank', href='https://twitter.com/hashtag/WAQ17', rel='noreferrer') #WAQ17
+                          a(target='_blank', href='https://twitter.com/hashtag/RAQ', rel='noreferrer') #RAQ
+                        p
+                      // end div.messageBody
+                    // .tileInner
+                  .tile.ok.text.twitter(data-timestamp='1490988975', data-platform='twitter', data-id='847895335053778944', data-guid='twitter_847895335053778944', style='display: block;')
+                    .tileInner
+                      .info
+                        a.avatar(target='_blank', href='https://twitter.com/webaquebec')
+                          img.box_round4(src='https://pbs.twimg.com/profile_images/800724958125113344/CcYGw9Wu_normal.jpg', onerror='replaceBrokenImage(this);')
+                        .meta
+                          a(target='_blank', href='https://twitter.com/webaquebec') Web à Québec
+                          .socialIcon
+                          span 1 day ago
+                        // end div.meta
+                      // end div.info
+                      .message
+                        p
+                        p
+                          | Découvrez la dernière création 
+                          a(target='_blank', href='https://twitter.com/hashtag/Microsoft', rel='noreferrer') #Microsoft
+                          |  spécialement conçue pour le 
+                          a(target='_blank', href='https://twitter.com/hashtag/WAQ17!', rel='noreferrer') #WAQ17!
+                          |  Suivez toutes les mentions, ici!  
+                          br
+                          | 🙌😎… 
+                          a(href='https://t.co/ARfaet2LjP') https://t.co/ARfaet2LjP
+                        p
+                      // end div.messageBody
+                    // .tileInner
+                  .tile.ok.image.twitter(data-timestamp='1490986747', data-platform='twitter', data-id='847885990144471040', data-guid='twitter_847885990144471040', style='display: block;')
+                    .tileInner
+                      a.imageMain(href='https://twitter.com/statuses/847885990144471040', target='_blank')
+                        img(src='https://pbs.twimg.com/media/C8RLzLQVYAA1k7Q.jpg', onerror='replaceBrokenImage(this);')
+                      .info
+                        a.avatar(target='_blank', href='https://twitter.com/alexandre_gagne')
+                          img.box_round4(src='https://pbs.twimg.com/profile_images/817086506326171652/0Jw8jIzP_normal.jpg', onerror='replaceBrokenImage(this);')
+                        .meta
+                          a(target='_blank', href='https://twitter.com/alexandre_gagne') Alexandre Gagné
+                          .socialIcon
+                          span 1 day ago
+                        // end div.meta
+                      // end div.info
+                      .message
+                        p
+                        p
+                          | La 2e 
+                          a(target='_blank', href='https://twitter.com/hashtag/SNQuebec17', rel='noreferrer') #SNQuebec17
+                          |  débute. Une grosse semaine pour Québec! Les détails. 
+                          a(href='https://t.co/mtWKWNnUTw') https://t.co/mtWKWNnUTw
+                          a(target='_blank', href='https://twitter.com/hashtag/WAQ17', rel='noreferrer') #WAQ17
+                          a(target='_blank', href='https://twitter.com/hashtag/RAQ', rel='noreferrer') #RAQ
+                          a(href='https://t.co/xi32KD1avV') https://t.co/xi32KD1avV
+                        p
+                      // end div.messageBody
+                    // .tileInner
+                  .tile.ok.image.instagram(data-timestamp='1490981900', data-platform='instagram', data-id='1482786112175289211_1199159251', data-guid='instagram_1482786112175289211_1199159251', style='display: block;')
+                    .tileInner
+                      a.imageMain(href='https://www.instagram.com/p/BST6hzmFzN7/', target='_blank')
+                        img(src='https://scontent.cdninstagram.com/t51.2885-15/s480x480/e35/c235.0.610.610/17587365_1745525822425569_8780284252613771264_n.jpg', onerror='replaceBrokenImage(this);')
+                      .info
+                        a.avatar(target='_blank', href='https://instagram.com/tonikwebstudio')
+                          img.box_round4(src='https://scontent.cdninstagram.com/t51.2885-19/11820473_1651462471734805_1444750586_a.jpg', onerror='replaceBrokenImage(this);')
+                        .meta
+                          a(target='_blank', href='https://instagram.com/tonikwebstudio') Tonik Web Studio
+                          .socialIcon
+                          span 1 day ago
+                        // end div.meta
+                      // end div.info
+                      .message
+                        p
+                        p
+                          | Boutique en ligne: Quoi savoir avant de se lancer? 
+                          a(href='https://goo.gl/ckGxMC') https://goo.gl/ckGxMC
+                          a(target='_blank', href='https://instagram.com/explore/tags/marketing/', rel='noreferrer') #marketing
+                          a(target='_blank', href='https://instagram.com/explore/tags/quebec/', rel='noreferrer') #quebec
+                          a(target='_blank', href='https://instagram.com/explore/tags/plusqueduweb/', rel='noreferrer') #plusqueduweb
+                          a(target='_blank', href='https://instagram.com/explore/tags/ecommerce/', rel='noreferrer') #ecommerce
+                          a(target='_blank', href='https://instagram.com/explore/tags/web/', rel='noreferrer') #web
+                          a(target='_blank', href='https://instagram.com/explore/tags/waq17/', rel='noreferrer') #waq17
+                          a(target='_blank', href='https://instagram.com/explore/tags/jedi/', rel='noreferrer') #jedi
+                        p
+                      // end div.messageBody
+                    // .tileInner
+                  .tile.ok.text.twitter(data-timestamp='1490978386', data-platform='twitter', data-id='847850921774153728', data-guid='twitter_847850921774153728', style='display: block;')
+                    .tileInner
+                      .info
+                        a.avatar(target='_blank', href='https://twitter.com/El_Don_Carlito')
+                          img.box_round4(src='https://pbs.twimg.com/profile_images/779061212675993600/gkg_7s65_normal.jpg', onerror='replaceBrokenImage(this);')
+                        .meta
+                          a(target='_blank', href='https://twitter.com/El_Don_Carlito') Charlie Fernandez
+                          .socialIcon
+                          span 1 day ago
+                        // end div.meta
+                      // end div.info
+                      .message
+                        p
+                        p
+                          a(target='_blank', href='https://twitter.com/briansolis', rel='noreferrer') @briansolis
+                          a(target='_blank', href='https://twitter.com/bcama', rel='noreferrer') @bcama
+                          a(target='_blank', href='https://twitter.com/webaquebec', rel='noreferrer') @webaquebec
+                          |  I've heard your french is pretty good Brian! Time to practice 😉 See you next week! 
+                          a(target='_blank', href='https://twitter.com/hashtag/WAQ17', rel='noreferrer') #WAQ17
+                        p
+                      // end div.messageBody
+                    // .tileInner
+                  .tile.ok.image.twitter(data-timestamp='1490967601', data-platform='twitter', data-id='847805686390173696', data-guid='twitter_847805686390173696', style='display: block;')
+                    .tileInner
+                      a.imageMain(href='https://twitter.com/statuses/847805686390173696', target='_blank')
+                        img(src='https://pbs.twimg.com/media/C8QCxSBW0AEOaRA.jpg', onerror='replaceBrokenImage(this);')
+                      .info
+                        a.avatar(target='_blank', href='https://twitter.com/Sophie_Panot')
+                          img.box_round4(src='https://pbs.twimg.com/profile_images/730390974552260612/1s63YuZo_normal.jpg', onerror='replaceBrokenImage(this);')
+                        .meta
+                          a(target='_blank', href='https://twitter.com/Sophie_Panot') Sophie Panot
+                          .socialIcon
+                          span 1 day ago
+                        // end div.meta
+                      // end div.info
+                      .message
+                        p
+                        p
+                          | Prête pour venir gâter nos amis Québécois :) 
+                          a(target='_blank', href='https://twitter.com/hashtag/opinel', rel='noreferrer') #opinel
+                          a(target='_blank', href='https://twitter.com/hashtag/Meka', rel='noreferrer') #Meka
+                          a(target='_blank', href='https://twitter.com/hashtag/WAQ17', rel='noreferrer') #WAQ17
+                          a(target='_blank', href='https://twitter.com/hashtag/SNQuebec17', rel='noreferrer') #SNQuebec17
+                          a(target='_blank', href='https://twitter.com/Webmecanik', rel='noreferrer') @Webmecanik
+                          a(target='_blank', href='https://twitter.com/ofqj_france', rel='noreferrer') @ofqj_france
+                          a(href='https://t.co/VOX4UMYIty') https://t.co/VOX4UMYIty
+                        p
+                      // end div.messageBody
+                    // .tileInner
+                  .tile.ok.image.twitter(data-timestamp='1490891606', data-platform='twitter', data-id='847486938156220417', data-guid='twitter_847486938156220417', style='display: block;')
+                    .tileInner
+                      a.imageMain(href='https://twitter.com/statuses/847486938156220417', target='_blank')
+                        img(src='https://pbs.twimg.com/media/C8LgiXiUIAAni5_.jpg', onerror='replaceBrokenImage(this);')
+                      .info
+                        a.avatar(target='_blank', href='https://twitter.com/audreyrivy')
+                          img.box_round4(src='https://pbs.twimg.com/profile_images/378800000697383386/bd6c07954470bbefb0c8abd142e89fc3_normal.jpeg', onerror='replaceBrokenImage(this);')
+                        .meta
+                          a(target='_blank', href='https://twitter.com/audreyrivy') Audrey Rivy
+                          .socialIcon
+                          span 2 days ago
+                        // end div.meta
+                      // end div.info
+                      .message
+                        p
+                        p
+                          | Tonouuuuurs les amis bretons arrivent bientôt au 
+                          a(target='_blank', href='https://twitter.com/hashtag/WAQ17', rel='noreferrer') #WAQ17
+                          |  😘 
+                          a(target='_blank', href='https://twitter.com/Tonours', rel='noreferrer') @Tonours
+                          a(target='_blank', href='https://twitter.com/SFLinux', rel='noreferrer') @SFLinux
+                          a(href='https://t.co/RoK7Hz0x5b') https://t.co/RoK7Hz0x5b
+                        p
+                      // end div.messageBody
+                    // .tileInner
+                  .tile.ok.text.twitter(data-timestamp='1490887640', data-platform='twitter', data-id='847470306306347008', data-guid='twitter_847470306306347008', style='display: block;')
+                    .tileInner
+                      .info
+                        a.avatar(target='_blank', href='https://twitter.com/webaquebec')
+                          img.box_round4(src='https://pbs.twimg.com/profile_images/800724958125113344/CcYGw9Wu_normal.jpg', onerror='replaceBrokenImage(this);')
+                        .meta
+                          a(target='_blank', href='https://twitter.com/webaquebec') Web à Québec
+                          .socialIcon
+                          span 2 days ago
+                        // end div.meta
+                      // end div.info
+                      .message
+                        p
+                        p
+                          | Classe de Maître 
+                          a(target='_blank', href='https://twitter.com/hashtag/WAQ17/', rel='noreferrer') #WAQ17/
+                          |  Découvrez la méthodologie IBM Design Thinking afin de résoudre une problématique réelle! 🔥… 
+                          a(href='https://t.co/jxgoCe1YVs') https://t.co/jxgoCe1YVs
+                        p
+                      // end div.messageBody
+                    // .tileInner
+                  .tile.ok.text.twitter(data-timestamp='1490881432', data-platform='twitter', data-id='847444264325750784', data-guid='twitter_847444264325750784', style='display: block;')
+                    .tileInner
+                      .info
+                        a.avatar(target='_blank', href='https://twitter.com/webaquebec')
+                          img.box_round4(src='https://pbs.twimg.com/profile_images/800724958125113344/CcYGw9Wu_normal.jpg', onerror='replaceBrokenImage(this);')
+                        .meta
+                          a(target='_blank', href='https://twitter.com/webaquebec') Web à Québec
+                          .socialIcon
+                          span 2 days ago
+                        // end div.meta
+                      // end div.info
+                      .message
+                        p
+                        p
+                          | Nous avons hâte de savoir comment hacker les objets connectés !! 
+                          br
+                          a(target='_blank', href='https://twitter.com/hashtag/WAQ17', rel='noreferrer') #WAQ17
+                          |  🔥😎🙏
+                          br
+                          a nhttps://t.co/tafOjFWQoG
+                          a(target='_blank', href='https://twitter.com/JeanSebTr%E2%80%A6', rel='noreferrer') @JeanSebTr…
+                          a(href='https://t.co/FTR8IUnMBE') https://t.co/FTR8IUnMBE
+                        p
+                      // end div.messageBody
+                    // .tileInner
+                  .tile.ok.image.instagram(data-timestamp='1490738519', data-platform='instagram', data-id='1480744484806694980_41901938', data-guid='instagram_1480744484806694980_41901938', style='display: block;')
+                    .tileInner
+                      a.imageMain(href='https://www.instagram.com/p/BSMqUN8BZhE/', target='_blank')
+                        img(src='https://scontent.cdninstagram.com/t51.2885-15/s640x640/sh0.08/e35/17596643_1227776254011385_4761031102280237056_n.jpg', onerror='replaceBrokenImage(this);')
+                      .info
+                        a.avatar(target='_blank', href='https://instagram.com/calabrie17')
+                          img.box_round4(src='https://scontent.cdninstagram.com/t51.2885-19/s150x150/14582224_158844144573606_854567130329251840_a.jpg', onerror='replaceBrokenImage(this);')
+                        .meta
+                          a(target='_blank', href='https://instagram.com/calabrie17') Carole-Ann Labrie
+                          .socialIcon
+                          span 4 days ago
+                        // end div.meta
+                      // end div.info
+                      .message
+                        p
+                        p
+                          | Mon plan de match pour la semaine prochaine 💻📱🔌 
+                          a(target='_blank', href='https://instagram.com/explore/tags/WAQ17/', rel='noreferrer') #WAQ17
+                          a(target='_blank', href='https://instagram.com/explore/tags/waq/', rel='noreferrer') #waq
+                          a(target='_blank', href='https://instagram.com/explore/tags/webaquebec/', rel='noreferrer') #webaquebec
+                          a(target='_blank', href='https://instagram.com/explore/tags/semainenumerique/', rel='noreferrer') #semainenumerique
+                          a(target='_blank', href='https://instagram.com/explore/tags/digitalmarketing/', rel='noreferrer') #digitalmarketing
+                          |   #
+                        p
+                      // end div.messageBody
+                    // .tileInner
+                  .tile.ok.image.instagram(data-timestamp='1490633530', data-platform='instagram', data-id='1479863772856170992_29182567', data-guid='instagram_1479863772856170992_29182567', style='display: block;')
+                    .tileInner
+                      a.imageMain(href='https://www.instagram.com/p/BSJiELBD7nw/', target='_blank')
+                        img(src='https://scontent.cdninstagram.com/t51.2885-15/s640x640/sh0.08/e35/17586716_1363714477023179_2987153718622814208_n.jpg', onerror='replaceBrokenImage(this);')
+                      .info
+                        a.avatar(target='_blank', href='https://instagram.com/mc_picard')
+                          img.box_round4(src='https://scontent.cdninstagram.com/t51.2885-19/s150x150/13774605_1153521748047917_417236532_a.jpg', onerror='replaceBrokenImage(this);')
+                        .meta
+                          a(target='_blank', href='https://instagram.com/mc_picard') Marie-Claire Picard
+                          .socialIcon
+                          span 5 days ago
+                        // end div.meta
+                      // end div.info
+                      .message
+                        p
+                        p
+                          | Yé! 
+                          a(target='_blank', href='https://instagram.com/explore/tags/waq17/', rel='noreferrer') #waq17
+                          a(target='_blank', href='https://instagram.com/explore/tags/leslibraires/', rel='noreferrer') #leslibraires
+                        p
+                      // end div.messageBody
+                    // .tileInner
+                  .tile.ok.image.instagram(data-timestamp='1490627753', data-platform='instagram', data-id='1479815312723221991_937187283', data-guid='instagram_1479815312723221991_937187283', style='display: block;')
+                    .tileInner
+                      a.imageMain(href='https://www.instagram.com/p/BSJXC_ADR3n/', target='_blank')
+                        img(src='https://scontent.cdninstagram.com/t51.2885-15/s640x640/sh0.08/e35/17493669_1468739626533132_8077371262160076800_n.jpg', onerror='replaceBrokenImage(this);')
+                      .info
+                        a.avatar(target='_blank', href='https://instagram.com/agenceidecom')
+                          img.box_round4(src='https://scontent.cdninstagram.com/t51.2885-19/s150x150/13381165_992676870802042_192243163_a.jpg', onerror='replaceBrokenImage(this);')
+                        .meta
+                          a(target='_blank', href='https://instagram.com/agenceidecom') Idecom
+                          .socialIcon
+                          span 5 days ago
+                        // end div.meta
+                      // end div.info
+                      .message
+                        p
+                        p
+                          | La poste apporte de belles choses ce matin!! 😁🤓
+                          a(target='_blank', href='https://instagram.com/explore/tags/waq/', rel='noreferrer') #waq
+                          a(target='_blank', href='http://instagram.com/martygag13', rel='noreferrer') @martygag13
+                          a(target='_blank', href='http://instagram.com/audreysracine', rel='noreferrer') @audreysracine
+                        p
+                      // end div.messageBody
+                    // .tileInner
+                  .tile.ok.image.instagram(data-timestamp='1490377827', data-platform='instagram', data-id='1477718778041340450_1622240', data-guid='instagram_1477718778041340450_1622240', style='display: block;')
+                    .tileInner
+                      a.imageMain(href='https://www.instagram.com/p/BSB6WY7FBIi/', target='_blank')
+                        img(src='https://scontent.cdninstagram.com/t51.2885-15/s640x640/sh0.08/e35/17438662_245980459205884_44891483509096448_n.jpg', onerror='replaceBrokenImage(this);')
+                      .info
+                        a.avatar(target='_blank', href='https://instagram.com/riomarti')
+                          img.box_round4(src='https://scontent.cdninstagram.com/t51.2885-19/s150x150/16110480_231387753972804_796440636378054656_n.jpg', onerror='replaceBrokenImage(this);')
+                        .meta
+                          a(target='_blank', href='https://instagram.com/riomarti') Martine rioux
+                          .socialIcon
+                          span 8 days ago
+                        // end div.meta
+                      // end div.info
+                      .message
+                        p
+                        p
+                          | Sandwich en préparation pour le 
+                          a(target='_blank', href='https://instagram.com/explore/tags/waq17/', rel='noreferrer') #waq17
+                          |   ! 
+                          a(target='_blank', href='https://instagram.com/explore/tags/sandwichdredi/', rel='noreferrer') #sandwichdredi
+                          a(target='_blank', href='https://instagram.com/explore/tags/quebec/', rel='noreferrer') #quebec
+                          a(target='_blank', href='https://instagram.com/explore/tags/numerique/', rel='noreferrer') #numerique
+                        p
+                      // end div.messageBody
+                    // .tileInner
+                  .tile.ok.image.instagram(data-timestamp='1490374853', data-platform='instagram', data-id='1477693833054614250_688779010', data-guid='instagram_1477693833054614250_688779010', style='display: block;')
+                    .tileInner
+                      a.imageMain(href='https://www.instagram.com/p/BSB0rZGAXLq/', target='_blank')
+                        img(src='https://scontent.cdninstagram.com/t51.2885-15/s640x640/sh0.08/e35/c0.69.1080.1080/17494352_594297460775814_4036822671835529216_n.jpg', onerror='replaceBrokenImage(this);')
+                      .info
+                        a.avatar(target='_blank', href='https://instagram.com/webaquebec')
+                          img.box_round4(src='https://scontent.cdninstagram.com/t51.2885-19/s150x150/15056634_1036703156439974_1129371863915429888_a.jpg', onerror='replaceBrokenImage(this);')
+                        .meta
+                          a(target='_blank', href='https://instagram.com/webaquebec') WAQ - Web à Québec
+                          .socialIcon
+                          span 8 days ago
+                        // end div.meta
+                      // end div.info
+                      .message
+                        p
+                        p
+                          | GRAND MOMENT ! On vient de recevoir nos macarons et on CA-POTE !! Alors, quel est votre préféré ? 
+                          a(target='_blank', href='https://instagram.com/explore/tags/Waq17/', rel='noreferrer') #Waq17
+                          a(target='_blank', href='https://instagram.com/explore/tags/emoji/', rel='noreferrer') #emoji
+                          a(target='_blank', href='https://instagram.com/explore/tags/geek/', rel='noreferrer') #geek
+                          a(target='_blank', href='https://instagram.com/explore/tags/goodies/', rel='noreferrer') #goodies
+                          a(target='_blank', href='https://instagram.com/explore/tags/geekstuff/', rel='noreferrer') #geekstuff
+                        p
+                      // end div.messageBody
+                    // .tileInner
+                  .tile.ok.image.instagram(data-timestamp='1490364528', data-platform='instagram', data-id='1477607214974166539_3193592205', data-guid='instagram_1477607214974166539_3193592205', style='display: block;')
+                    .tileInner
+                      a.imageMain(href='https://www.instagram.com/p/BSBg-7uFuYL/', target='_blank')
+                        img(src='https://scontent.cdninstagram.com/t51.2885-15/s640x640/sh0.08/e35/17438976_1849970728660334_4002836814665613312_n.jpg', onerror='replaceBrokenImage(this);')
+                      .info
+                        a.avatar(target='_blank', href='https://instagram.com/qidigo')
+                          img.box_round4(src='https://scontent.cdninstagram.com/t51.2885-19/s150x150/13092230_232374527120844_142672091_a.jpg', onerror='replaceBrokenImage(this);')
+                        .meta
+                          a(target='_blank', href='https://instagram.com/qidigo') Qidigo
+                          .socialIcon
+                          span 8 days ago
+                        // end div.meta
+                      // end div.info
+                      .message
+                        p
+                        p
+                          | On a nos passes pour le 
+                          a(target='_blank', href='https://instagram.com/explore/tags/waq17/', rel='noreferrer') #waq17
+                          |   !! Oooooh yeah! 🤠💻 
+                          a(target='_blank', href='https://instagram.com/explore/tags/waq2017/', rel='noreferrer') #waq2017
+                          a(target='_blank', href='https://instagram.com/explore/tags/escouadeqidigo/', rel='noreferrer') #escouadeqidigo
+                          a(target='_blank', href='https://instagram.com/explore/tags/quebeccity/', rel='noreferrer') #quebeccity
+                          a(target='_blank', href='https://instagram.com/explore/tags/numerique/', rel='noreferrer') #numerique
+                          a(target='_blank', href='http://instagram.com/quebecnumerique', rel='noreferrer') @quebecnumerique
+                        p
+                      // end div.messageBody
+                    // .tileInner
+                  .tile.ok.image.instagram(data-timestamp='1490221742', data-platform='instagram', data-id='1476409439568334759_688779010', data-guid='instagram_1476409439568334759_688779010', style='display: block;')
+                    .tileInner
+                      a.imageMain(href='https://www.instagram.com/p/BR9QpAcgQ-n/', target='_blank')
+                        img(src='https://scontent.cdninstagram.com/t51.2885-15/s640x640/sh0.08/e35/c177.0.725.725/17439196_1004823529651287_7240897892746002432_n.jpg', onerror='replaceBrokenImage(this);')
+                      .info
+                        a.avatar(target='_blank', href='https://instagram.com/webaquebec')
+                          img.box_round4(src='https://scontent.cdninstagram.com/t51.2885-19/s150x150/15056634_1036703156439974_1129371863915429888_a.jpg', onerror='replaceBrokenImage(this);')
+                        .meta
+                          a(target='_blank', href='https://instagram.com/webaquebec') WAQ - Web à Québec
+                          .socialIcon
+                          span 10 days ago
+                        // end div.meta
+                      // end div.info
+                      .message
+                        p
+                        p
+                          | Il est WAQ moins 15 jours ! Toute l'équipe amorce le dernier virage et on a tous très, très hâte 🔥💙 
+                          a(target='_blank', href='https://instagram.com/explore/tags/waq17/', rel='noreferrer') #waq17
+                          a(target='_blank', href='https://instagram.com/explore/tags/quebec/', rel='noreferrer') #quebec
+                          a(target='_blank', href='https://instagram.com/explore/tags/canada/', rel='noreferrer') #canada
+                          a(target='_blank', href='https://instagram.com/explore/tags/conference/', rel='noreferrer') #conference
+                          a(target='_blank', href='https://instagram.com/explore/tags/web.../', rel='noreferrer') #web...
+                        p
+                      // end div.messageBody
+                    // .tileInner
+                  .tile.ok.image.instagram.ready(data-timestamp='1488549336', data-platform='instagram', data-id='1462380286602956399_688779010', data-guid='instagram_1462380286602956399_688779010', style='display: block;')
+                    .tileInner
+                      a.imageMain(href='https://www.instagram.com/p/BRLax9lgM5v/', target='_blank')
+                        img(src='https://scontent.cdninstagram.com/t51.2885-15/s480x480/e35/c80.0.538.538/17125640_703284843178395_6060788364687179776_n.jpg', onerror='replaceBrokenImage(this);')
+                      .info
+                        a.avatar(target='_blank', href='https://instagram.com/webaquebec')
+                          img.box_round4(src='https://scontent.cdninstagram.com/t51.2885-19/s150x150/15056634_1036703156439974_1129371863915429888_a.jpg', onerror='replaceBrokenImage(this);')
+                        .meta
+                          a(target='_blank', href='https://instagram.com/webaquebec') WAQ - Web à Québec
+                          .socialIcon
+                          span 29 days ago
+                        // end div.meta
+                      // end div.info
+                      .message
+                        p
+                        p
+                          | 🔥 WAQ-1🔥  Plus qu'un mois avant le 
+                          a(target='_blank', href='https://instagram.com/explore/tags/WAQ17/', rel='noreferrer') #WAQ17
+                          |   et toute l'équipe est parée pour la dernière ligne droite ! 
+                          br
+                          | N'oubliez pas de vous inscrire à...
+                        p
+                      // end div.messageBody
+                    // .tileInner
+                  .tile.ok.image.instagram.ready(data-timestamp='1487082932', data-platform='instagram', data-id='1450079198403522865_688779010', data-guid='instagram_1450079198403522865_688779010', style='display: block;')
+                    .tileInner
+                      a.imageMain(href='https://www.instagram.com/p/BQft1kdBnEx/', target='_blank')
+                        img(src='https://scontent.cdninstagram.com/t51.2885-15/s640x640/sh0.08/e35/16463960_1804400563155352_395585587681165312_n.jpg', onerror='replaceBrokenImage(this);')
+                      .info
+                        a.avatar(target='_blank', href='https://instagram.com/webaquebec')
+                          img.box_round4(src='https://scontent.cdninstagram.com/t51.2885-19/s150x150/15056634_1036703156439974_1129371863915429888_a.jpg', onerror='replaceBrokenImage(this);')
+                        .meta
+                          a(target='_blank', href='https://instagram.com/webaquebec') WAQ - Web à Québec
+                          .socialIcon
+                          span 46 days ago
+                        // end div.meta
+                      // end div.info
+                      .message
+                        p
+                        p
+                          | Petit souvenir du 
+                          a(target='_blank', href='https://instagram.com/explore/tags/WAQ16/', rel='noreferrer') #WAQ16
+                          |   en ce 14 février! Fraises enrobées de chocolat et mousseux étaient offerts lors du fameux 5 à 7 de clôture! 🍓🥂 Joyeuse...
+                        p
+                      // end div.messageBody
+                    // .tileInner
+                  .tile.ok.image.instagram.ready(data-timestamp='1486741678', data-platform='instagram', data-id='1447216546463419889_4159082670', data-guid='instagram_1447216546463419889_4159082670', style='display: block;')
+                    .tileInner
+                      a.imageMain(href='https://www.instagram.com/p/BQVi8gFBQ3x/', target='_blank')
+                        img(src='https://scontent.cdninstagram.com/t51.2885-15/e15/16583455_1862449533966848_483431013347753984_n.jpg', onerror='replaceBrokenImage(this);')
+                      .info
+                        a.avatar(target='_blank', href='https://instagram.com/snquebec')
+                          img.box_round4(src='https://scontent.cdninstagram.com/t51.2885-19/s150x150/15043789_1792503244324958_2323498855263371264_a.jpg', onerror='replaceBrokenImage(this);')
+                        .meta
+                          a(target='_blank', href='https://instagram.com/snquebec') SNQuebec
+                          .socialIcon
+                          span 50 days ago
+                        // end div.meta
+                      // end div.info
+                      .message
+                        p
+                        p
+                          | | PARTENARIAT! |
+                          br
+                          | Le saviez-vous? L'Hôtel Pur est l’hôtel officiel de la 
+                          a(target='_blank', href='https://instagram.com/explore/tags/SNQu%C3%A9bec17/', rel='noreferrer') #SNQuébec17
+                          |   et du 
+                          a(target='_blank', href='https://instagram.com/explore/tags/WAQ17!/', rel='noreferrer') #WAQ17!
+                          br
+                          | Profitez d’une nuitée au prix spécial de 119...
+                        p
+                      // end div.messageBody
+                    // .tileInner
+                  .tile.ok.image.instagram.ready(data-timestamp='1486682140', data-platform='instagram', data-id='1446717105092971287_235399913', data-guid='instagram_1446717105092971287_235399913', style='display: block;')
+                    .tileInner
+                      a.imageMain(href='https://www.instagram.com/p/BQTxYrDjEsX/', target='_blank')
+                        img(src='https://scontent.cdninstagram.com/t51.2885-15/s640x640/sh0.08/e35/16464122_370074820031125_4849476341604548608_n.jpg', onerror='replaceBrokenImage(this);')
+                      .info
+                        a.avatar(target='_blank', href='https://instagram.com/dju_design')
+                          img.box_round4(src='https://scontent.cdninstagram.com/t51.2885-19/11887223_437333279785273_183931767_a.jpg', onerror='replaceBrokenImage(this);')
+                        .meta
+                          a(target='_blank', href='https://instagram.com/dju_design') julie
+                          .socialIcon
+                          span 51 days ago
+                        // end div.meta
+                      // end div.info
+                      .message
+                        p
+                        p
+                          | On est allé voir les copains de Québec :-D 
+                          a(target='_blank', href='https://instagram.com/explore/tags/WAQ17/', rel='noreferrer') #WAQ17
+                          a(target='_blank', href='https://instagram.com/explore/tags/quebecnumerique/', rel='noreferrer') #quebecnumerique
+                        p
+                      // end div.messageBody
+                    // .tileInner
+                  .tile.ok.image.instagram.ready(data-timestamp='1486222188', data-platform='instagram', data-id='1442858748259712564_3266872', data-guid='instagram_1442858748259712564_3266872', style='display: block;')
+                    .tileInner
+                      a.imageMain(href='https://www.instagram.com/p/BQGEGMPFb40/', target='_blank')
+                        img(src='https://scontent.cdninstagram.com/t51.2885-15/s640x640/sh0.08/e35/16230238_168682743624006_4664058106605469696_n.jpg', onerror='replaceBrokenImage(this);')
+                      .info
+                        a.avatar(target='_blank', href='https://instagram.com/kimauclair')
+                          img.box_round4(src='https://scontent.cdninstagram.com/t51.2885-19/s150x150/15046766_1786759444906329_2859677491549700096_a.jpg', onerror='replaceBrokenImage(this);')
+                        .meta
+                          a(target='_blank', href='https://instagram.com/kimauclair') Kim Auclair
+                          .socialIcon
+                          span 56 days ago
+                        // end div.meta
+                      // end div.info
+                      .message
+                        p
+                        p
+                          | Le lancement du 
+                          a(target='_blank', href='http://instagram.com/webaquebec', rel='noreferrer') @webaquebec
+                          |  , c'est du sérieux ! 
+                          a(target='_blank', href='https://instagram.com/explore/tags/waq17/', rel='noreferrer') #waq17
+                          |   . Photo 
+                          a(target='_blank', href='http://instagram.com/marcandrebeauchampca', rel='noreferrer') @marcandrebeauchampca
+                          a(target='_blank', href='https://instagram.com/explore/tags/entrepreneurship/', rel='noreferrer') #entrepreneurship
+                          a(target='_blank', href='https://instagram.com/explore/tags/entrepreneur/', rel='noreferrer') #entrepreneur
+                          a(target='_blank', href='https://instagram.com/explore/tags/blogger/', rel='noreferrer') #blogger
+                        p
+                      // end div.messageBody
+                    // .tileInner
+              #isPaid
+            // end section#tiles
+          // .main-col
+        // end div.wrap
+        #holding
+        script(src='https://s3-ap-southeast-2.amazonaws.com/streama/live/js/modernizr.js?v=2.5.0')
+        script(src='https://s3-ap-southeast-2.amazonaws.com/streama-iframe/js/masonry.pkgd.min.js')
+        script(src='https://s3-ap-southeast-2.amazonaws.com/streama-iframe/js/imagesloaded.pkgd.min.js')
+        script.
+          (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+          (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+          })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+          ga('create', 'UA-38488832-1', 'auto', {'allowLinker': true});
+          ga('require', 'linker');
+          ga('linker:autoLink', ['chargify.com', 'strea.ma', 'mogulnzlimited.zendesk.com'] );
+          ga('send', 'pageview');
+        script.
+          var embedded = true; //flag to know we should look at streamoptions.embedinstructions
+        script.
+          var refreshrate = 20000; //20s - how often we will check Strea.ma for new posts, by default. This value will automatically change to throttle busy streams.
+          var refresher; //the setInterval controlling when we request fresh posts
+          var loader; //another setInterval controlling how often posts get pushed onto the screen when they are loaded and ready
+          window.blockedposts = [];//a local list of posts we've removed locally for whatever reason - broken images or not present in fresh data - so we don't try to add them again.
+          var wwidth = $(window).width(); //window width, used to tell tricksy false resize() events from real ones
+          var emptystream = $('#emptyStream').length;
+          var $newstream = $('<div>' + $('html').html() + '</div>'); //holds a copy of the whole stream HTML whenever we getPosts()
+          //console.log($newstream);
+          jQuery(function($) {
+          //DOCUMENT READY
+          $(document).ready(function(){
+          //handle resizing of window
+          $(window).resize(function() {
+          //should do something nice here to hide everything while we resize the window
+          clearTimeout(this.id);
+          this.id = setTimeout(doneResizing, 500);
+          });
+          function doneResizing() {
+          if(wwidth != $(window).width()) { //only relayout if the window width actually changed
+          doLayout();
+          wwidth = $(window).width();
+          }
+          }//doneResizing()
+          //Update time text every 10 seconds
+          setInterval(function(){
+          updateTimeText();
+          },10000);
+          updateTimeText();
+          //Start off checking for new posts every 20s
+          refresher = setInterval(function(){
+          getPosts();
+          },refreshrate);
+          //and also check for new posts just this once after the page loads, in case we just served up an old cache. We *should* have some fresh stuff within a few seconds...
+          setTimeout(function(){
+          getPosts();
+          },5000);
+          doLayout();	//do initial layout
+          });
+          //getPosts()
+          //Send an ajax request for a fresh copy of the current stream, and load what we need from it
+          function getPosts() {
+          //Check for posts we already have, and ones we should not have
+          //Then... dripfeed them into the columns
+          var url = '';
+          console.log('loading ' + url);
+          $.get(url, function(data) {
+          console.log('fn. getPosts()')
+          //Replace current stream options with the ones loaded just now
+          $newstream = $('<div></div>');
+          $(data).appendTo($newstream);
+          eval($newstream.find('#optionsjs').html()); //evaluate the options js we loaded
+          window['streamoptions'] = streamoptions; //replace our global options with the new set
+          window['streamtheme'] = streamtheme; //replace our global theme options with the new set
+          updateStreamTheme($newstream);
+          showBrandingSidebar();
+          //Process tiles
+          $('#holding').html( $(data).find('#postcorral').html() ); //grab all the new .tiles and put in #holding
+          $('#holding').html( $( $('#holding .tile').get() ) ); //why did I reverse the tile order? :/
+          if($('#holding .tile').length) { //we have some new tiles
+          var newtileids = [];
+          var removecount = 0;
+          //Note all new ids, and remove any duplicate posts
+          $('#holding .tile').each(function(){
+          var tileid = $(this).attr('data-id');
+          var tileplatform = $(this).attr('data-platform');
+          var guid = $(this).attr('data-guid'); //[platform]_[platform_id]
+          //console.log('thisid: ' + thisid)
+          //console.log(window.blockedposts)
+          if($.inArray(guid,window.blockedposts) !== -1) {
+          console.log('Suppressing previously removed post ' + guid);
+          $(this).remove();
+          }
+          else {
+          newtileids.push(guid);
+          //if this is a pinned post coming around again AND the existing copy is at the bottom of the stream
+          if($(this).hasClass('pinned') && $('.matrix .tile[data-guid="' + guid + '"]').is(':last-child')) {
+          console.log('recycling a pinnecd post - ' + guid)
+          $('.matrix .tile[data-guid="' + guid + '"]').slideUp(2000,function(){
+          $(this).remove();
+          });
+          }
+          else {
+          if($('div[data-guid="' + guid + '"]').length > 1) { //we now have more than one post with this ID, so this fresh one is a dupe
+          $(this).remove();
+          removecount += 1;//count how many we remove
+          }
+          }
+          }
+          });
+          console.log(removecount + ' duplicate tiles');
+          console.log( (newtileids.length - removecount) + ' new tiles to add' );
+          //Remove any visible tiles which are not present in the fresh data - maybe moderated out
+          var removemultiplier = 1; //multiplier for how many seconds to wait before deleting each post
+          $('.matrix .tile').not('.advertTile').each(function(index){
+          var tileid = $(this).attr('data-id');
+          var tileplatform = $(this).attr('data-platform');
+          var guid = $(this).attr('data-guid'); //[platform]_[platform_id]
+          if(newtileids.length && $.inArray(guid,newtileids) == -1) {
+          console.log(guid + ' is not present in our ' + newtileids.length + ' new posts')
+          if( $(this).hasClass('pinned') == false ) { //never block a pinned post
+          window.blockedposts.push(guid); //locally remember that we've removed this post, because posts occasionally disappear then reappear
+          }
+          //tidy up the window.blockedposts array so it doesn't grow indefinitely if we leave strea.ma running
+          if(window.blockedposts.length > 50) {
+          for(var i = 0; i < (window.blockedposts.length - 50); i++) {
+          window.blockedposts.shift();
+          }
+          }
+          setTimeout(function(){
+          //slide post up and remove it
+          $('.matrix .tile[data-guid="' + guid + '"]').slideUp(2000,function(){
+          $(this).remove();
+          });
+          console.log('Removing ' + guid);
+          },removemultiplier * 1500);
+          removemultiplier += 1;
+          }
+          });
+          //default delay between tiles going into the matrix
+          var tiledelay = 3000;
+          $('#holding .tile').appendTo('#postcorral');
+          $('#holding').html(''); //clear out any junk left in the holding div
+          var loadtilecount = $('#postcorral .tile').length; //number of posts waiting to go onto the screen
+          //Throttling
+          //If we have too many posts to show in 25s @ 3s per post, don't refresh until we're nearly done with our posts
+          if(loadtilecount * tiledelay > 20000) {
+          newrefreshrate = (loadtilecount * tiledelay);
+          }
+          else { //we probably have too few posts to show @3s per post, so slow down the rate at which we push them in
+          newrefreshrate = 20000;
+          tiledelay = 20000/loadtilecount; //add tiles a bit slower so we don't run out before the next refresh
+          }
+          //When each tile is ready to be put on screen, add a 'ready' class
+          $('#postcorral .tile').each(function(i){
+          $(this).imagesLoaded( function(instance) {  //when each post's image (if any) loads
+          var $tile = $(instance.elements[0]); //get the tile which is ready to go in
+          $tile.addClass('ready');
+          });
+          });
+          //Stop existing tile loader process, set up a new one
+          clearInterval(loader);
+          if(loadtilecount > 0) {
+          console.log('Loading ' + loadtilecount + ' posts at an interval of ' + (tiledelay / 1000) + 's / post');
+          //Reset stream status panel
+          $('#streamstatus').text( loadtilecount );
+          //Set up loader loop
+          loader = setInterval(function(){
+          if($('#postcorral .tile.ready').length) {
+          if($('#postcorral .tile').length > 1) {
+          //make the #posttimer progress bar count down to the next post insert
+          var fullwidth = $('#streamstatus').width();
+          $('#posttimer').animate({ 'width': fullwidth }, 0); //for some reason this is the best way to reset the width
+          $('#posttimer').animate({ 'width':0 }, tiledelay);
+          }
+          loadNewTile($('#postcorral .tile.ready').first());
+          }
+          },tiledelay);
+          }
+          else {
+          console.log('No new posts to load');
+          if(typeof streamtheme != 'undefined' && typeof streamtheme['keep-moving'] != 'undefined' && streamtheme['keep-moving'] == 1) {
+          //keep moving
+          var randomcolumnindex = Math.floor(Math.random() * $('.matrix .column').length );
+          $target = $('.matrix .column[data-index="' + randomcolumnindex + '"]');
+          $post = $target.find('.tile').last().appendTo('#postcorral');
+          //grab the last post in the column and bung it in at the top
+          setTimeout(function(){
+          $target.css('top','-'+($post.height()+20)+'px');
+          $target.prepend($post);//remove dropzone
+          $post.show();
+          $target.animate({ 'top':0 }, 1000);
+          },300);
+          }
+          }
+          //Stop existing fresh post request timer, start again
+          clearInterval(refresher);
+          refresher = setInterval(function(){
+          getPosts();
+          },newrefreshrate);
+          console.log('new refresh time is ' + newrefreshrate);
+          updateTimeText(); //refresh the relative times on posts
+          } else if( $newstream.find('#emptyStream').length && $('#emptyStream').length == 0 ) { //we just found the 'empty stream' message in the latest load - clear the stream
+          $('#postcorral').before( $newstream.find('#emptyStream') );
+          emptystream = 1;
+          $('.matrix .tile').remove();
+          }//endif
+          }); //$.get()
+          } // getPosts()
+          //Resets the number of columns and distributes posts among them
+          function doLayout() {
+          console.log('doLayout()')
+          //Move all tiles out of the column matrix and back into the corral
+          $('.matrix .tile').appendTo('#postcorral');
+          //Destroy any existing columns
+          $('.matrix').html('');
+          //Calculate number of columns from screen width
+          //default to 1 columns
+          var cols = 1;
+          var width = $('.matrix').width();
+          var colwidth = 310;
+          //310px is our max column width, so if we take the ceil() of our container width / 310, we will get a good number of columns to use for larger screens
+          //This adds one more column than would cleanly fit if they were 310px wide (unless they *exactly* fit, like 310/930px).
+          //The calculated number of columns then get percentage widths to share the available space, which ensures they are are all <= 310px
+          cols = Math.ceil(width / colwidth);
+          console.log('Cols: ' + cols);
+          var percentwidth = 100 / cols; //the actual width we will give our columns
+          //add column width class
+          $('.matrix').addClass('columns-'+cols);
+          //alert('cols - ' + cols)
+          //Create columns
+          //add appropriate columns
+          for ( var i = 1; i <= cols; i++){
+          //alert('adding column');
+          $('.matrix').append('<div class="column" data-index="'+i+'" style="width:' + percentwidth + '%"></div>');
+          }
+          //important - for accurate calculation of incoming image heights, make the post corral exactly the same width as one column
+          $('#postcorral').css('width', percentwidth + '%' );
+          //Distribute all posts from the corral
+          refreshColIndexes();
+          var colindex = cols; //start in the last column
+          //when all posts are ready
+          $('#streamstatus').text( $('#postcorral .tile').length );//update debug streamstatus counter
+          $('#postcorral .tile').each(function(){
+          $(this).imagesLoaded( function(instance) {
+          var $post = $(instance.elements[0]);
+          $post.hide();
+          loadNewTile($post);
+          });
+          });
+          //console.log($container.data('masonry'))
+          }//doLayout()
+          //Make a random column order, which we can reset when we've used it up
+          //used inside loadNewTile
+          var colindexes = [];
+          function refreshColIndexes() {
+          //alert('refreshColindexes')
+          colindexes = [];
+          for(var i=1;i <= $('.matrix .column').length; i++) {
+          colindexes.push(i);
+          }
+          colindexes = shuffle(colindexes);
+          }
+          refreshColIndexes();
+          //Push a new tile onto the screen, into the next column in the queue
+          function loadNewTile($post){
+          console.log('Adding a tile of height ' + $post.height())
+          colindex = colindexes.pop();
+          if(colindexes.length == 0) {
+          do {
+          refreshColIndexes();
+          }
+          while((colindexes[0] != 'undefined') && (colindex == colindexes[0]) && colindexes.length > 1);
+          }
+          //find a list to put it in
+          var $target = $('.column[data-index="' + colindex + '"]');
+          //****************************************
+          //'Smart' insert to maintain time order
+          //****************************************
+          var timestamp = $post.attr('data-timestamp');
+          var inserted = false;
+          //Figure out where to insert this post, and how.
+          //If it's fresher than anything else in the $target column, we do the nice CSS animation and show it at the top
+          //However if it needs to be inserted further down the column, or at the bottom, just slideDown()
+          if($target.find('.tile').length) { //there are existing tiles, find the appropriate spot for this post
+          //First a special check to see if the post is going to be at the top
+          if(timestamp >= ($target.find('.tile').first().attr('data-timestamp') - 30)  || $post.attr('data-type') == 'advert' || $post.hasClass('pinned')) {
+          $target.css('top','-'+($post.height()+20)+'px');
+          $target.prepend($post);//remove dropzone
+          $post.show();
+          $target.animate({ 'top':0 }, 1000);
+          }
+          else {
+          //not going at the top, so figure out where it is going
+          $.each($target.find('.tile'), function(){
+          $oldpost = $(this);
+          if( $oldpost.attr('data-timestamp') < timestamp ) { //found a post which is older than the one we want to insert
+          $post.css('display','none');
+          $oldpost.before($post); //insert our post
+          $post.hide().slideDown(1000); //show the post
+          inserted = true; //flag that we are done inserting
+          return false; //stop the $.each() loop for this tile
+          }
+          });
+          //if we got to here and inserted is still false, this post goes on the bottom of the column
+          if(inserted === false) {
+          $target.append($post);
+          $post.hide().slideDown(1000);
+          }
+          }
+          }
+          else { //first post in the column, just bung it in
+          $target.css('top','-'+($post.height()+20)+'px');
+          $target.prepend($post);//remove dropzone
+          $post.show();
+          $target.animate({ 'top':0 }, 1000);
+          }
+          //if we just inserted an ad, remove the last ad in the stream
+          if($post.attr('data-type') == 'advert') {
+          removeOldestAd();
+          }
+          if(typeof emptystream != undefined && emptystream != 0) {
+          $('#emptyStream').remove();
+          emptystream = 0;
+          }
+          }// loadNewTile()
+          //An array shuffle function, because apparently that's not a thing in jquery
+          //http://stackoverflow.com/a/2450976
+          function shuffle(array) {
+          var currentIndex = array.length, temporaryValue, randomIndex ;
+          // While there remain elements to shuffle...
+          while (0 !== currentIndex) {
+          // Pick a remaining element...
+          randomIndex = Math.floor(Math.random() * currentIndex);
+          currentIndex -= 1;
+          // And swap it with the current element.
+          temporaryValue = array[currentIndex];
+          array[currentIndex] = array[randomIndex];
+          array[randomIndex] = temporaryValue;
+          }
+          return array;
+          }//shuffle()
+          function removeOldestAd() {
+          if( $('.advertTile').length > ( Math.floor( 0.05 * $('.matrix .post').not('.advertTile').length ) + 1 ) ){
+          console.log('found ' + $('.advertTile').length + ' ad tiles, should only have ' + Math.floor( 0.05 * $('.matrix .post').not('.advertTile').length ) + 1 );
+          var oldest = '';
+          $('.matrix .advertTile').each(function(){
+          if(oldest == '' || $(this).attr('data-id') < oldest) {
+          oldest = $(this).attr('data-id');
+          }
+          });
+          if(oldest != '') {
+          $('.matrix .advertTile[data-id="' + oldest + '"]').slideUp(2000,function(){ $(this).remove(); }); //slide post up and remove it
+          }
+          }
+          }//removeOldestAd()
+          });
+        script.
+          function updateStreamTheme($div) {
+          if(typeof streamtheme != 'undefined') {
+          console.log('updateStreamTheme()')
+          var background = '';
+          //background-color
+          if(typeof streamtheme['background-color'] != 'undefined') {
+          background += streamtheme['background-color'] + ' ';
+          }
+          //background-image
+          if(typeof streamtheme['background-image'] != 'undefined') {
+          background += ' url(' + streamtheme['background-image'] + ') left top/cover repeat-y fixed';
+          }
+          if(background != '') {
+          $('html').css('background',background);
+          }
+          //Replace page styles (covers font, tile colours)
+          if($div.find('#pagestyles').length){
+          console.log('changing #pagestyles')
+          $('#pagestyles').html( $div.find('#pagestyles').html() );
+          }
+          //Pull in the new Google webfont if applicable
+          if( $div.find('#stream-font').length && $('#stream-font').length == 0) { //we just loaded a custom font but there's no stylesheet for it - make one
+          console.log('adding new font stylesheet')
+          $('#pagestyles').before( $div.find('#stream-font') );
+          }
+          else if($div.find('#stream-font').length && ($('#stream-font').attr('href') != $div.find('#stream-font').attr('href')) ){//If we have a custom font and it's different to what's just come in with the fresh data
+          console.log('changing #stream-font')
+          $('#stream-font').attr('href', $div.find('#stream-font').attr('href') );
+          }
+          //Custom banner
+          $('#custombanner').html( $div.find('#custombanner').html() );
+          }
+          else {
+          console.log('streamtheme is undefined')
+          }
+          }//updateStreamTheme()
+        script.
+          //Relative times on posts
+          function updateTimeText(){
+          console.log('updateTimeText()')
+          $('.tile').each(function(){
+          //read timestamp
+          thisTimestamp =  $(this).attr('data-timestamp');
+          timeNow = Math.round(new Date().getTime() / 1000);
+          timediff = timeNow - thisTimestamp;
+          //console.log(timediff);
+          var timeText = ''
+          if(isNaN(timediff)) { //if timediff was NaN then timeText will be too
+          timeText = 'Moments ago';
+          }
+          else if(timediff >= 86400) { //dealing in days
+          var daycount = Math.round(timediff / 60 / 60 / 24);
+          timeText = (daycount == 1 ? '1 day ago' : daycount + ' days ago');
+          }
+          else if( timediff >= 3600) { //dealing in hours
+          var hourvalue = Math.round(timediff / 60 / 60);
+          timeText = (hourvalue == 1 ? '1 hour ago' : hourvalue + ' hours ago');
+          }
+          else if(timediff >= 60) { //dealing in minutes
+          var minvalue = Math.round(timediff / 60 );
+          timeText = (minvalue == 1 ? '1 minute ago' : minvalue + ' minutes ago');
+          }
+          else {
+          timeText = 'Less than 1 minute ago';
+          }
+          $(this).find('.info .meta span').html(timeText);
+          //$(this).children('.message').children('.messageInfo').children('.personTime').children('span').html(timeText);
+          //console.log(timeText);
+          });
+          }//updateTimeText()
